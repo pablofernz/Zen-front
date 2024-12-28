@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+    font-family: "Trebuchet";
+    src: url(./assets/fonts/TrebuchetMS.woff2) format(woff2);
+}
+/* 
+@font-face {
+    font-family: "Segoe UI";
+    src: url(./assets/fonts/SegoeUI-Bold.woff2) format(woff2);
+    font-weight: 900;
+} */

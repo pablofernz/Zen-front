@@ -16,7 +16,7 @@ const Home = () => {
   const [formOpen, setFormOpen] = useState(false);
   const [taskStatus, setTaskStatus] = useState("all");
   const [roomType, setRoomType] = useState("normal");
-  const [searchOpen, setSearchOpen] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [updateTaskFormOpen, setUpdateTaskFormOpen] = useState();
 
   useEffect(() => {

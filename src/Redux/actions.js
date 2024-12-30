@@ -1,6 +1,6 @@
 import axios from "axios"
-const apiURL = "http://localhost:3001/api"
-// const apiURL = "https://zen-api-anac.onrender.com/api"
+// const apiURL = "http://localhost:3001/api"
+const apiURL = "https://zen-api-anac.onrender.com/api"
 
 export const GET_ALL_TASKS = "GET_ALL_TASKS"
 export const GET_COMPLETED_TASKS = "GET_COMPLETED_TASKS"

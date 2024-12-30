@@ -147,10 +147,9 @@ const Home = () => {
               className={style.taskSearcher}
             >
               <p>
-                {" "}
-                {viewportWidth > 600 ? "Search a task..." : "Click to search"}
+                {viewportWidth > 900 ? "Search a task..." : "Search a task"}
               </p>
-              {viewportWidth > 600 && (
+              {viewportWidth > 900 && (
                 <div>
                   <p>Ctrl + K</p>
                 </div>
@@ -308,6 +307,14 @@ const Home = () => {
           )}
         </AnimatePresence>
       </main>
+
+      <a
+        href="https://m.media-amazon.com/images/I/71g66k97cnL._AC_SL1500_.jpg"
+        target="_blank"
+        className={style.inspiration}
+      >
+        THE INSPIRATION CAME FROM...
+      </a>
     </div>
   );
 };

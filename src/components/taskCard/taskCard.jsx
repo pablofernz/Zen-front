@@ -86,7 +86,7 @@ const TaskCard = ({
             ? "blur(0px) opacity(1) saturate(1)"
             : taskStatusFiltered == taskData.completed
             ? "blur(0px) opacity(1) saturate(1)"
-            : "blur(5px) opacity(0.5) saturate(0.4)",
+            : "blur(3px) opacity(0.5) saturate(0.4)",
 
         pointerEvents:
           taskStatusFiltered === "all"
@@ -219,29 +219,34 @@ const TaskCard = ({
         </div>
 
         {/* the button thats pin the task in zen mode*/}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: roomType == "zen" ? 0.3 : isPinned ? 0.7 : 0 }}
-          transition={{ ease: "anticipate", duration: 1 }}
-          disabled={roomType == "normal"}
-          className={style.pin}
-          onClick={() => {
-            setIsPinned(!isPinned);
-          }}
-        >
-          <svg
-            stroke="black"
-            fill="black"
-            strokeWidth="0"
-            viewBox="0 0 24 24"
-            height="25px"
-            width="25px"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M16 3a1 1 0 0 1 .117 1.993l-.117 .007v4.764l1.894 3.789a1 1 0 0 1 .1 .331l.006 .116v2a1 1 0 0 1 -.883 .993l-.117 .007h-4v4a1 1 0 0 1 -1.993 .117l-.007 -.117v-4h-4a1 1 0 0 1 -.993 -.883l-.007 -.117v-2a1 1 0 0 1 .06 -.34l.046 -.107l1.894 -3.791v-4.762a1 1 0 0 1 -.117 -1.993l.117 -.007h8z"></path>
-          </svg>
-        </motion.button>
-
+        <AnimatePresence>
+          {roomType == "zen" && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: isPinned ? 0.7 : 0.3,
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ ease: "anticipate", duration: 1 }}
+              className={style.pin}
+              onClick={() => {
+                setIsPinned(!isPinned);
+              }}
+            >
+              <svg
+                stroke="black"
+                fill="black"
+                strokeWidth="0"
+                viewBox="0 0 24 24"
+                height="25px"
+                width="25px"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M16 3a1 1 0 0 1 .117 1.993l-.117 .007v4.764l1.894 3.789a1 1 0 0 1 .1 .331l.006 .116v2a1 1 0 0 1 -.883 .993l-.117 .007h-4v4a1 1 0 0 1 -1.993 .117l-.007 -.117v-4h-4a1 1 0 0 1 -.993 -.883l-.007 -.117v-2a1 1 0 0 1 .06 -.34l.046 -.107l1.894 -3.791v-4.762a1 1 0 0 1 -.117 -1.993l.117 -.007h8z"></path>
+              </svg>
+            </motion.button>
+          )}
+        </AnimatePresence>
         {/* title of the task */}
         <header>
           <p className={style.title} style={{ color: color }}>

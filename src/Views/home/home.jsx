@@ -74,14 +74,16 @@ const Home = () => {
     "rgb(208, 238, 255)",
   ];
 
-  if (roomType == "zen") {
-    toast("Try drag a task!", {
-      duration: 3000,
-      position: "bottom-right",
-      icon: "✨",
-      removeDelay: 1000,
-    });
-  }
+  useEffect(() => {
+    if (roomType == "zen") {
+      toast("Try drag a task!", {
+        duration: 3000,
+        position: "bottom-right",
+        icon: "✨",
+        removeDelay: 1000,
+      });
+    }
+  }, [roomType]);
   return (
     <div className={style.home}>
       {/* initial pageloader */}

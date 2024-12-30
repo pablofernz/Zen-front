@@ -7,18 +7,25 @@ import { AnimatePresence, motion } from "framer-motion";
 import TaskCard from "../../components/taskCard/taskCard";
 import PageLoader from "../../components/pageLoader.jsx/pageLoader";
 import Search from "../../components/search/search";
+
+import useViewportWidth from "../../Hooks/useViewportWidth";
+
 import { square } from "ldrs";
 square.register();
 
 const Home = () => {
   const dispatch = useDispatch();
+  const viewportWidth = useViewportWidth();
+
   const tasks = useSelector((state) => state.allTasks);
+
   const [formOpen, setFormOpen] = useState(false);
   const [taskStatus, setTaskStatus] = useState("all");
   const [roomType, setRoomType] = useState("normal");
   const [searchOpen, setSearchOpen] = useState(false);
   const [updateTaskFormOpen, setUpdateTaskFormOpen] = useState();
 
+  // This code detect when its pressed ctrl + K to open the search modal
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === "k") {
@@ -34,12 +41,14 @@ const Home = () => {
     };
   }, []);
 
+  // this useeffect fetch all the tasks when page is loaded
   useEffect(() => {
     dispatch(getAllTasks());
   }, []);
 
   const ref = useRef(null);
 
+  // literally the name says it
   function randomNumberInRange(min, max) {
     const array = new Uint32Array(1);
     window.crypto.getRandomValues(array);
@@ -47,8 +56,9 @@ const Home = () => {
     return Math.floor(randomValue * (max - min + 1) + min); // Escalar a rango deseado
   }
 
+  // An array of colors for each task :p
   const colors = [
-    "rgb(125, 255, 164)",
+    "rgb(151, 255, 182)",
     "rgb(177, 125, 255)",
     "rgb(125, 194, 255)",
     "rgb(255, 125, 125)",
@@ -59,19 +69,27 @@ const Home = () => {
     "rgb(181, 207, 255)",
     "rgb(255, 225, 125)",
     "rgb(210, 255, 192)",
+    "rgb(252, 192, 255)",
+    "rgb(255, 211, 192)",
+    "rgb(208, 238, 255)",
   ];
 
   return (
     <div className={style.home}>
+      {/* initial pageloader */}
       <PageLoader option="load" />
+
+      {/* Search form Modal */}
       <AnimatePresence>
         {searchOpen && <Search setSearchOpen={setSearchOpen} tasks={tasks} />}
       </AnimatePresence>
 
+      {/* Create task form Modal */}
       <AnimatePresence>
         {formOpen && <TaskForm close={setFormOpen} toUpdate={false} />}
       </AnimatePresence>
 
+      {/* Update task form Modal */}
       <AnimatePresence>
         {updateTaskFormOpen && (
           <TaskForm
@@ -82,6 +100,7 @@ const Home = () => {
         )}
       </AnimatePresence>
 
+      {/* Things on top of the page */}
       <header>
         <div className={style.leftSide}>
           <div
@@ -127,10 +146,15 @@ const Home = () => {
               }}
               className={style.taskSearcher}
             >
-              <p>Search a task...</p>
-              <div>
-                <p>Ctrl + K</p>
-              </div>
+              <p>
+                {" "}
+                {viewportWidth > 600 ? "Search a task..." : "Click to search"}
+              </p>
+              {viewportWidth > 600 && (
+                <div>
+                  <p>Ctrl + K</p>
+                </div>
+              )}
             </button>
             <button
               className={style.newTaskButton}
@@ -212,6 +236,8 @@ const Home = () => {
           </div>
         </div>
       </header>
+
+      {/* Tasks container */}
       <main>
         <motion.div
           initial={{ opacity: 0 }}
@@ -250,7 +276,7 @@ const Home = () => {
                 <TaskCard
                   taskData={task}
                   reference={ref}
-                  color={colors[index]}
+                  color={colors[index % colors.length]}
                   zIndex={1}
                   taskStatusFiltered={taskStatus}
                   roomType={roomType}

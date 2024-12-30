@@ -61,7 +61,7 @@
     color: gray;
     font-size: 18px;
     letter-spacing: 1px;
-   
+
 }
 
 .body {
@@ -228,7 +228,7 @@
     font-weight: 900;
     font-size: 18px;
     letter-spacing: 1px;
-    padding: 5px 15px;
+    padding: 10px 20px;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -236,6 +236,7 @@
     color: rgb(0, 0, 0);
     gap: 10px;
     transition: all 0.3s ease;
+    font-size: 15px;
 }
 
 .submitButtonAux {
@@ -258,7 +259,7 @@
     font-family: Trebuchet;
     top: 0;
     opacity: 0;
-user-select: none;
+    user-select: none;
     right: 0;
     font-size: 15px;
     transition: all 0.4s ease;
@@ -270,4 +271,22 @@ user-select: none;
 
 .inputContainer>textarea:focus+.charCounter {
     opacity: 1;
+}
+
+@media (max-width:500px) {
+    .card {
+        width: calc(100% - 20px);
+    }
+
+    .inputContainer>input {
+        font-size: 14px;
+    }
+
+    .inputContainer>textarea {
+        font-size: 14px;
+    }
+
+    .headerTitle {
+        font-size: 15px;
+    }
 }

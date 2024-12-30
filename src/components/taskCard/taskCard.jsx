@@ -3,6 +3,7 @@ import style from "./taskCard.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { getAllTasks, deleteATask, updateATask } from "../../Redux/actions";
 import { useDispatch } from "react-redux";
+import useViewportWidth from "../../Hooks/useViewportWidth";
 
 const TaskCard = ({
   reference,
@@ -16,8 +17,11 @@ const TaskCard = ({
   const [isDragged, setIsDragged] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
+  const viewportWidth = useViewportWidth();
+
+  // This function is responsible for deleting a task by the ID provided when it is called
   const deleteHandler = () => {
     dispatch(deleteATask(taskData._id))
       .then((response) => {
@@ -31,6 +35,8 @@ const TaskCard = ({
         console.log(error);
       });
   };
+
+  // This function update the status of the task
   const updateHandler = () => {
     const newBody = {
       title: taskData.title,
@@ -50,15 +56,17 @@ const TaskCard = ({
         console.log(error);
       });
   };
+
   return (
     <motion.div
       drag={roomType == "normal" || isPinned ? false : true}
-      dragConstraints={reference}
+      dragConstraints={reference} //ref of his parent container
       className={style.taskCard}
-      onDragStart={(event, info) => {
+      //both of this funcionts manage the cursor pointer
+      onDragStart={() => {
         setIsDragged(true);
       }}
-      onDragEnd={(event, info) => {
+      onDragEnd={() => {
         setIsDragged(false);
       }}
       style={{
@@ -99,7 +107,12 @@ const TaskCard = ({
       }}
       transition={{ ease: "anticipate", duration: 1 }}
     >
-      <div className={style.background} style={{ backgroundColor: color }} />
+      {/* The shadow of the task card */}
+      {viewportWidth > 350 && (
+        <div className={style.background} style={{ backgroundColor: color }} />
+      )}
+
+      {/* This is the option menu */}
       <AnimatePresence>
         {optionsOpen && (
           <motion.div
@@ -174,6 +187,7 @@ const TaskCard = ({
         )}
       </AnimatePresence>
 
+      {/* the interior of the card */}
       <div
         className={style.dataCard}
         style={{ backgroundColor: color }}
@@ -181,6 +195,7 @@ const TaskCard = ({
           setIsHovered(true);
         }}
       >
+        {/* the button thats open the menu */}
         <div className={style.options}>
           <button
             onClick={() => {
@@ -203,8 +218,12 @@ const TaskCard = ({
           </button>
         </div>
 
+        {/* the button thats pin the task in zen mode*/}
         <motion.button
-          animate={{ opacity: isPinned ? 0.7 : 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: roomType == "zen" ? 0.3 : isPinned ? 0.7 : 0 }}
+          transition={{ ease: "anticipate", duration: 1 }}
+          disabled={roomType == "normal"}
           className={style.pin}
           onClick={() => {
             setIsPinned(!isPinned);
@@ -223,16 +242,21 @@ const TaskCard = ({
           </svg>
         </motion.button>
 
+        {/* title of the task */}
         <header>
           <p className={style.title} style={{ color: color }}>
             {taskData.title}
           </p>
         </header>
+
+        {/* description of the task */}
         <div className={style.titleAndDescription}>
           <p className={style.description} style={{ color: color }}>
             {taskData.description}
           </p>
         </div>
+
+        {/* status of the task */}
         <footer>
           <motion.div className={style.status}>
             <div style={{ backgroundColor: color }} />
@@ -253,6 +277,8 @@ const TaskCard = ({
               {taskData.completed ? "COMPLETED" : "PENDING"}
             </p>
           </motion.div>
+
+          {/* this replace "2024" for "24" */}
           <div style={{ color: color }} className={style.readMore}>
             {taskData.createdAt?.replace(
               /(\d{2})-(\d{2})-(\d{4})/,

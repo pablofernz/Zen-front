@@ -8,6 +8,8 @@ export const GET_ONE_TASK = "GET_ONE_TASK"
 export const CREATE_A_TASK = "CREATE_A_TASK"
 export const TASK_SEARCHER = "TASK_SEARCHER"
 
+
+// this use the forst GET to "/api/tasks" route (1/5)
 export const getAllTasks = () => {
     return async function (dispatch) {
         try {
@@ -24,6 +26,7 @@ export const getAllTasks = () => {
     }
 }
 
+// this use the "/api/tasks?completed" route (2/5)
 export const getCompletedTasks = (completed) => {
     return async function (dispatch) {
         try {
@@ -40,6 +43,7 @@ export const getCompletedTasks = (completed) => {
     }
 }
 
+// this filter the obtained tasks with words or letters
 export const taskSearcher = (task) => {
     return async function (dispatch) {
         dispatch({
@@ -49,6 +53,7 @@ export const taskSearcher = (task) => {
     }
 }
 
+// this use the second GET to "/api/tasks/:id" route (3/5)
 export const getOneTask = (id) => {
     return async function (dispatch) {
 
@@ -65,30 +70,34 @@ export const getOneTask = (id) => {
     }
 }
 
-
+// this use the POST to "/api/tasks" route (3/5)
 export const createATask = (body) => {
     return async function () {
         try {
             const response = await axios.post(`${apiURL}/tasks`, body)
-            if (response) return response.data.success
+            if (response) return response.data
 
         } catch (error) {
-            console.log(error)
+            if (error) return error.response.data
         }
     }
 }
+
+// this use the PUT to "/api/tasks/:id" route (4/5)
 export const updateATask = (id, newBody) => {
     return async function () {
         try {
             const response = await axios.put(`${apiURL}/tasks/${id}`, newBody)
-            if (response) console.log(response.data.message)
+            if (response) return response.data
 
         } catch (error) {
+            if (error) return error.response.data
             console.log(error)
         }
     }
 }
 
+// this use the DELETE to "/api/tasks/:id" route (5/5)
 export const deleteATask = (id) => {
     return async function () {
         try {

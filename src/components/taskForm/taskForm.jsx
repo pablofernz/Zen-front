@@ -5,16 +5,19 @@ import ReactDOM from "react-dom";
 import { useDispatch } from "react-redux";
 import { createATask, getAllTasks, updateATask } from "../../Redux/actions";
 
+import toast, { Toaster } from "react-hot-toast";
+
 const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
   const dispatch = useDispatch();
+  // this makes sense when want update a task, obtaining the old data from the parent before the update
   const [body, setBody] = useState({
     title: taskToUpdate?.title || "",
     description: taskToUpdate?.description || "",
     completed: taskToUpdate?.completed || false,
   });
   const [sentStatus, setSendStatus] = useState("not send");
-  const [error, setError] = useState(taskToUpdate ? true : false);
 
+  // this detech when "Escape" key its pressed to close the form
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -28,6 +31,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
     };
   }, []);
 
+  // This handle the values of the body.title and body.description
   const postHandleChange = (event) => {
     setBody({
       ...body,
@@ -37,6 +41,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
     });
   };
 
+  //This handle the values of the body.title and body.description of the new task data
   const updateHandleChange = (event) => {
     const updatedValue =
       event.target.value.charAt(0).toUpperCase() +
@@ -48,52 +53,93 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
     };
 
     setBody(updatedBody);
-
-    setError(
-      taskToUpdate.title === updatedBody.title &&
-        taskToUpdate.description === updatedBody.description
-    );
   };
-  useEffect(() => {
-    if (taskToUpdate) {
-      setError(
-        taskToUpdate.title === body.title &&
-          taskToUpdate.description === body.description &&
-          taskToUpdate.completed === body.completed
-      );
+
+  // this grab the data of body and make a POST
+  const submit = async () => {
+    const loading = toast.loading("Creating the task", {
+      position: "bottom-right",
+    });
+    try {
+      setSendStatus("sending");
+
+      const response = await dispatch(createATask(body));
+      if (response.success) {
+        toast.dismiss(loading);
+        toast.success(response.message, {
+          position: "bottom-right",
+        });
+        setSendStatus("sent");
+
+        setTimeout(() => {
+          close(false);
+          dispatch(getAllTasks());
+        }, 1500);
+      } else {
+        setSendStatus("not send");
+        toast.dismiss(loading);
+        toast.error(response.errors[0] || response.message, {
+          position: "bottom-right",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.dismiss(loading);
+      toast.error(error.message, {
+        position: "bottom-right",
+      });
     }
-  }, [body, taskToUpdate]);
-
-  const submit = () => {
-    setSendStatus("pending");
-
-    dispatch(createATask(body))
-      .then((response) => {
-        console.log(response);
-        setSendStatus("sent");
-        setTimeout(() => {
-          close(false);
-          dispatch(getAllTasks());
-        }, 1500);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
-  const update = () => {
-    setSendStatus("pending");
-    console.log(body);
-    dispatch(updateATask(taskToUpdate._id, body))
-      .then((response) => {
+
+  // this grab the data of new body and make a PUT
+  const update = async () => {
+    const loading = toast.loading("Updating the task", {
+      position: "bottom-right",
+    });
+    try {
+      setSendStatus("sending");
+
+      const response = await dispatch(updateATask(taskToUpdate._id, body));
+      console.log(response);
+
+      if (response.success) {
+        toast.dismiss(loading);
+        toast.success(response.message, {
+          position: "bottom-right",
+        });
         setSendStatus("sent");
+
         setTimeout(() => {
           close(false);
           dispatch(getAllTasks());
         }, 1500);
-      })
-      .catch((error) => {
-        console.log(error);
+      } else {
+        setSendStatus("not send");
+        toast.dismiss(loading);
+        toast.error(response.errors[0], {
+          position: "bottom-right",
+        });
+      }
+    } catch (error) {
+      toast.dismiss(loading);
+      toast.error(error.message, {
+        position: "bottom-right",
       });
+    }
+
+    // setSendStatus("pending");
+    // console.log(body);
+    // dispatch(updateATask(taskToUpdate._id, body))
+    //   .then((response) => {
+    //     setSendStatus("sent");
+    //     setTimeout(() => {
+    //       close(false);
+    //       dispatch(getAllTasks());
+    //     }, 1500);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   return ReactDOM.createPortal(
@@ -104,6 +150,22 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
       className={style.component}
     >
       <div className={style.background} />
+
+      {/* this manage the popups */}
+      <Toaster
+        toastOptions={{
+          className: "",
+          style: {
+            backgroundColor: "rgb(20,20,20)",
+            fontFamily: "Trebuchet",
+            fontWeight: "900",
+            letterSpacing: "1px",
+            color: "gray",
+            borderRadius: "15px",
+          },
+        }}
+      />
+
       <form
         className={style.card}
         onSubmit={(e) => {
@@ -159,6 +221,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
 
         <div className={style.body}>
           <div className={style.titleAndDescription}>
+            {/* Input for the title */}
             <div className={style.inputContainer}>
               <input
                 type="text"
@@ -166,16 +229,17 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
                 value={body.title}
                 name="title"
                 onChange={taskToUpdate ? updateHandleChange : postHandleChange}
-                maxLength={50}
+                maxLength={80}
               />
               <p className={style.charCounter}>
                 {body.title.length < 10
                   ? `${body.title.length}/10`
-                  : `${body.title.length}/50`}
+                  : `${body.title.length}/80`}
               </p>
               <label>Title* </label>
             </div>
 
+            {/* Input for the description */}
             <div className={style.inputContainer}>
               <textarea
                 type="text"
@@ -191,6 +255,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
             </div>
           </div>
 
+          {/* buttons container for the status */}
           <div className={style.status}>
             <div className={style.inputContainer} style={{ height: "100%" }}>
               <div className={style.options}>
@@ -222,80 +287,39 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
           </div>
         </div>
 
+        {/* submit button */}
         <footer>
           <motion.button
             type="submit"
-            className={`${style.submitButton} ${
-              error || body.title.length < 10 ? style.disabled : ""
-            }`}
-            disabled={error || body.title.length < 10}
+            className={`${style.submitButton}
+             ${sentStatus == "sending" ? style.disabled : ""}
+            `}
+            disabled={sentStatus == "sending" || sentStatus == "sent"}
           >
-            <AnimatePresence mode="popLayout">
-              {sentStatus === "not send" && (
-                <motion.div
-                  key="not-send"
-                  exit={{ opacity: 0 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={style.submitButtonAux}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="3"
-                    stroke="currentColor"
-                    height="20"
-                    width="20"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4.5v15m7.5-7.5h-15"
-                    />
-                  </svg>
-                  <p>{taskToUpdate ? "Update Task" : "Add Task"}</p>
-                </motion.div>
-              )}
-
-              {sentStatus === "pending" && (
-                <motion.p
-                  key="pending"
-                  exit={{ opacity: 0 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <p>
-                    {taskToUpdate ? "Updathing the task" : "Creating the task"}
-                  </p>
-                </motion.p>
-              )}
-
-              {sentStatus === "sent" && (
-                <motion.div
-                  key="sent"
-                  exit={{ opacity: 0 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={style.submitButtonAux}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    height="20"
-                    width="20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <p>{taskToUpdate ? "Task updated" : "Task created"}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <motion.div
+              key="not-send"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={style.submitButtonAux}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="3"
+                stroke="currentColor"
+                height="20"
+                width="20"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              <p>{taskToUpdate ? "Update Task" : "Add Task"}</p>
+            </motion.div>
           </motion.button>
         </footer>
       </form>

@@ -21,6 +21,8 @@
     padding-bottom: 100px;
 }
 
+/* ----------- THINGS ON TOP OF THE PAGE ----------------- */
+
 .home>header {
     width: 100%;
     height: 100px;
@@ -120,9 +122,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0px;
+    gap: 10px;
     border-radius: 15px;
-    border: 2px solid black;
     overflow: hidden;
 }
 
@@ -196,8 +197,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 5px;
     color: black;
+    border: 2px solid black;
 }
 
 .newTaskButton:focus, .taskSearcher {
@@ -256,6 +258,10 @@
     background-color: white;
     z-index: 0;
 }
+
+
+/* ----------- TASKS CONTAINERS ----------------- */
+
 
 .home>main {
     width: calc(100% - 0px);

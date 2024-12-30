@@ -9,8 +9,11 @@ import {
   taskSearcher,
 } from "../../Redux/actions";
 import TaskCard from "../taskCard/taskCard";
+
 import { square } from "ldrs";
 square.register();
+
+import useViewportWidth from "../../Hooks/useViewportWidth";
 
 const Search = ({ setSearchOpen }) => {
   const dispatch = useDispatch();
@@ -18,13 +21,16 @@ const Search = ({ setSearchOpen }) => {
   const [preview, setPreview] = useState(false);
   const [taskData, setTaskData] = useState([]);
   const [search, setSearch] = useState("");
+  const viewportWidth = useViewportWidth();
 
+  // this function update the "search" value to the input value
   const searchHandler = (event) => {
     const value = event.target.value;
     setSearch(value);
     dispatch(taskSearcher(value));
   };
 
+  // This function calls an action by giving it an ID and takes care of looking up that task
   const searchByIDHandler = (id) => {
     dispatch(getOneTask(id))
       .then((response) => {
@@ -34,6 +40,8 @@ const Search = ({ setSearchOpen }) => {
         console.log(error);
       });
   };
+
+  // this detect when "Escape" key its pressed to close the modal
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -47,12 +55,8 @@ const Search = ({ setSearchOpen }) => {
     };
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => {}, 2000);
-  }, []);
-
+  // this function is responsible for obtaining all tasks depending on their status
   const completeHandler = (event) => {
-    console.log(event.target.value);
     dispatch(getCompletedTasks(event.target.value));
   };
 
@@ -64,8 +68,10 @@ const Search = ({ setSearchOpen }) => {
       className={style.component}
     >
       <div className={style.background} />
+
       <div className={style.card}>
         <AnimatePresence mode="popLayout">
+          {/* if doesnt click in any task, it will be rendered the task searcher */}
           {!preview ? (
             <motion.div
               key="taskSearcher"
@@ -77,7 +83,11 @@ const Search = ({ setSearchOpen }) => {
               <header>
                 <input
                   type="text"
-                  placeholder="Search any task..."
+                  placeholder={
+                    viewportWidth < 600
+                      ? "Type to search"
+                      : "Search any task..."
+                  }
                   className={style.searchInput}
                   onChange={searchHandler}
                   value={search}
@@ -188,6 +198,7 @@ const Search = ({ setSearchOpen }) => {
               </div>
             </motion.div>
           ) : (
+            // if a task is previewed, it will be rendered his task card
             <motion.div
               key="taskPreview"
               initial={{ opacity: 0 }}
@@ -220,6 +231,7 @@ const Search = ({ setSearchOpen }) => {
               <AnimatePresence mode="popLayout">
                 {taskData.length > 0 ? (
                   <motion.div
+                    className={style.taskContainer}
                     key="taskCardPreview"
                     initial={{ opacity: 0, scale: 0 }}
                     exit={{ opacity: 0, scale: 0 }}

@@ -188,6 +188,27 @@
     user-select: none;
 }
 
+.taskPreview {
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    gap: 10px;
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    margin: 20px;
+    color: gray;
+    top: 0;
+    left: 0;
+}
+
+
 @media (max-width: 600px) {
     .card {
         height: 450px;
@@ -209,25 +230,32 @@
         opacity: 1;
     }
 
-}
+    .closeButton {
+        width: 50px;
+    }
 
+    .selectButton {
+        width: 120px;
+        background-color: rgb(44, 44, 44);
+        height: calc(80% - 20px);
+        border-radius: 10px;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: none;
+        color: gray;
+        font-weight: 900;
+        letter-spacing: 1px;
+        font-family: Trebuchet;
+        appearance: none;
+        position: relative;
+        text-align: center;
+        font-size: 12px;
+    }
 
-.taskPreview {
-    height: 100%;
-    width: 100%;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    gap: 10px;
-    position: relative;
-}
+    .taskContainer {
+        scale: 0.9;
+    }
 
-.backButton {
-    position: absolute;
-    margin: 20px;
-    color: gray;
-    top: 0;
-    left: 0;
 }

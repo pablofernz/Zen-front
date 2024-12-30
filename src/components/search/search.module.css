@@ -1,0 +1,233 @@
+.component {
+    height: 100dvh;
+    width: 100dvw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    position: fixed;
+    top: 0;
+
+    z-index: 10;
+}
+
+.background {
+    height: 100dvh;
+    width: 100dvw;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.493);
+    z-index: 0;
+}
+
+.card {
+    height: 400px;
+    width: 550px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 20px;
+    box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.818);
+    z-index: 1;
+}
+
+.taskSearcher {
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+}
+
+.taskSearcher>header {
+    height: 15%;
+    width: 100%;
+    background-color: rgb(25, 25, 25);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 5px 10px rgb(0, 0, 0)
+}
+
+.searchInput {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    color: rgb(172, 172, 172);
+    padding-left: 20px;
+    background-color: transparent;
+    font-family: Trebuchet;
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-size: 15px;
+}
+
+.searchInput::placeholder {
+    color: gray;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus::placeholder {
+    color: rgb(194, 194, 194);
+}
+
+.searchInput:focus {
+    color: rgb(233, 233, 233);
+}
+
+.closeButton {
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+}
+
+.selectButton {
+    width: 170px;
+    background-color: rgb(44, 44, 44);
+    height: calc(100% - 20px);
+    border-radius: 10px;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    color: gray;
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-family: Trebuchet;
+    appearance: none;
+    position: relative;
+    text-align: center;
+}
+
+
+.taskSearcher>div {
+    border-radius: 15px;
+    background-color: rgb(15, 15, 15);
+    height: 80%;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+}
+
+.taskCard {
+    flex-shrink: 0;
+    height: 60px;
+    width: 100%;
+    background-color: rgb(20, 20, 20);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0px 0px 10px black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.taskCard:hover {
+    background-color: rgb(30, 30, 30);
+}
+
+.taskCard:hover .taskIcon {
+    color: gray
+}
+
+.taskIcon {
+    color: rgb(72, 72, 72);
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+
+.taskIcon2 {
+    color: rgb(93, 93, 93);
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.taskCard:hover .taskIcon2 {
+    opacity: 1;
+}
+
+
+.taskCard>h1 {
+    color: rgb(84, 84, 84);
+    width: 100%;
+    height: auto;
+    text-align: left;
+    font-family: Trebuchet;
+    font-weight: 900;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+}
+
+.taskCard:hover>h1 {
+    color: rgb(171, 171, 171);
+    user-select: none;
+}
+
+@media (max-width: 600px) {
+    .card {
+        height: 450px;
+        width: calc(100dvw - 20px);
+    }
+
+    .taskIcon2 {
+        color: rgb(46, 46, 46);
+        height: 100%;
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        opacity: 1;
+    }
+
+    .taskCard:hover .taskIcon2 {
+        opacity: 1;
+    }
+
+}
+
+
+.taskPreview {
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    gap: 10px;
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    margin: 20px;
+    color: gray;
+    top: 0;
+    left: 0;
+}

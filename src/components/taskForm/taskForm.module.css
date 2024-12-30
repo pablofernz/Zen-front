@@ -1,0 +1,273 @@
+.component {
+    height: 100dvh;
+    width: 100dvw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+}
+
+.background {
+    height: 100dvh;
+    width: 100dvw;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.493);
+}
+
+.card {
+    height: auto;
+    width: 500px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 20px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+}
+
+.card>header {
+    height: 50px;
+    width: 100%;
+    background-color: rgb(16, 16, 16);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerIcon {
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+}
+
+.headerTitle {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    font-family: Trebuchet;
+    font-weight: 900;
+    color: gray;
+    font-size: 18px;
+    letter-spacing: 1px;
+   
+}
+
+.body {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.titleAndDescription {
+    height: auto;
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(16, 16, 16);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap: 20px;
+
+}
+
+.inputContainer {
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column-reverse;
+    gap: 5px;
+    position: relative;
+}
+
+.inputContainer>label {
+    color: rgb(66, 66, 66);
+    font-family: Trebuchet;
+    font-weight: 900;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+
+}
+
+
+.inputContainer>input {
+    resize: none;
+    height: 50px;
+    width: 100%;
+    border-radius: 10px;
+    background-color: rgb(25, 25, 25);
+    padding-left: 15px;
+    color: rgb(86, 86, 86);
+    font-family: Trebuchet;
+    font-weight: 900;
+    letter-spacing: 1px;
+    outline: none;
+    transition: all 0.3s ease;
+
+}
+
+.inputContainer>textarea {
+    resize: none;
+    height: 150px !important;
+    width: 100%;
+    border-radius: 10px;
+    background-color: rgb(25, 25, 25);
+    padding: 15px;
+    color: rgb(86, 86, 86);
+    font-family: Trebuchet;
+    font-weight: 900;
+    letter-spacing: 1px;
+    outline: none;
+    transition: all 0.3s ease;
+
+}
+
+.inputContainer>textarea::placeholder {
+    color: rgb(86, 86, 86);
+    transition: all 0.3s ease;
+}
+
+.inputContainer>textarea:focus::placeholder {
+    color: rgb(140, 140, 140);
+}
+
+
+.inputContainer>textarea:focus {
+    color: rgb(201, 201, 201);
+}
+
+.inputContainer>input::placeholder {
+    color: rgb(86, 86, 86);
+    transition: all 0.3s ease;
+}
+
+.inputContainer>input:focus::placeholder {
+    color: rgb(140, 140, 140);
+}
+
+.inputContainer>input:focus {
+    color: rgb(233, 233, 233);
+}
+
+.status {
+    height: 100px;
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(16, 16, 16);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+.options {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(25, 25, 25);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.statusButton {
+    height: 100%;
+    width: 50%;
+    border-radius: 5px;
+    background-color: rgb(38, 38, 38);
+    color: rgb(120, 119, 119);
+    font-family: Trebuchet;
+    font-weight: 900;
+    letter-spacing: 1px;
+    outline: none;
+}
+
+.selected {
+    background-color: rgb(194, 194, 194);
+    color: rgb(0, 0, 0);
+    transition: all 0.3s ease;
+}
+
+.card>footer {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.submitButton {
+    background-color: rgb(230, 230, 230);
+    font-family: Trebuchet;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 1px;
+    padding: 5px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0, 0, 0);
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.submitButtonAux {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+}
+
+.disabled {
+    background-color: rgb(23, 23, 23);
+    color: rgb(68, 68, 68);
+}
+
+.charCounter {
+    font-weight: 900;
+    position: absolute;
+    color: rgb(61, 61, 61);
+    font-family: Trebuchet;
+    top: 0;
+    opacity: 0;
+user-select: none;
+    right: 0;
+    font-size: 15px;
+    transition: all 0.4s ease;
+}
+
+.inputContainer>input:focus+.charCounter {
+    opacity: 1;
+}
+
+.inputContainer>textarea:focus+.charCounter {
+    opacity: 1;
+}

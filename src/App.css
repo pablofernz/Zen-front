@@ -7,6 +7,36 @@
     font-family: "Trebuchet";
     src: url(./assets/fonts/TrebuchetMS.woff2) format(woff2);
 }
+
+@font-face {
+    font-family: "Priego Bold";
+    src: url(./assets/fonts/Priego\ Bold.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "Priego ExtraBold";
+    src: url(./assets/fonts/Priego\ ExtraBold.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "Priego Semibold";
+    src: url(./assets/fonts/Priego\ Semibold.otf) format("opentype");
+}
+
+body {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* Siempre muestra la barra de desplazamiento vertical */
+}
+
+body::-webkit-scrollbar-track {
+    background-color: black;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: black;
+}
+
 /* 
 @font-face {
     font-family: "Segoe UI";

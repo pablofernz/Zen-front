@@ -7,7 +7,7 @@ import {
   getCompletedTasks,
   getOneTask,
   taskSearcher,
-} from "../../redux/actions";
+} from "../../Redux/actions";
 import TaskCard from "../taskCard/taskCard";
 import { square } from "ldrs";
 square.register();

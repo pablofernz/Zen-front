@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import style from "./taskCard.module.css";
 import { AnimatePresence, motion } from "framer-motion";
-import { getAllTasks, deleteATask, updateATask } from "../../redux/actions";
+import { getAllTasks, deleteATask, updateATask } from "../../Redux/actions";
 import { useDispatch } from "react-redux";
 
 const TaskCard = ({

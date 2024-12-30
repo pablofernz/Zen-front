@@ -3,7 +3,7 @@ import { motion, AnimatePresence, delay } from "framer-motion";
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useDispatch } from "react-redux";
-import { createATask, getAllTasks, updateATask } from "../../redux/actions";
+import { createATask, getAllTasks, updateATask } from "../../Redux/actions";
 
 const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
   const dispatch = useDispatch();

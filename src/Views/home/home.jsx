@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import style from "./home.module.css";
-import { getAllTasks } from "../../redux/actions";
+import { getAllTasks } from "../../Redux/actions";
 import { useEffect, useRef, useState } from "react";
 import TaskForm from "../../components/taskForm/taskForm";
 import { AnimatePresence, motion } from "framer-motion";
@@ -63,7 +63,7 @@ const Home = () => {
 
   return (
     <div className={style.home}>
-      {/* <PageLoader option="load" /> */}
+      <PageLoader option="load" />
       <AnimatePresence>
         {searchOpen && <Search setSearchOpen={setSearchOpen} tasks={tasks} />}
       </AnimatePresence>

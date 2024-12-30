@@ -307,8 +307,12 @@
         height: 33.33%;
         width: 100%;
         justify-content: center;
-    }
+        padding-right: 0px;
 
+    }
+.roomTypeContainer{
+    scale: 0.8;
+}
 
     .taskSearcher {
         width: fit-content;

@@ -293,9 +293,14 @@
 
 
 @media (max-width: 900px) {
+    .home {
+        gap: 20px;
+    }
+
     .home>header {
         flex-direction: column;
         height: 200px;
+        margin-top: 10px;
     }
 
     .leftSide, .center, .rightSide {

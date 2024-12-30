@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import TaskCard from "../../components/taskCard/taskCard";
 import PageLoader from "../../components/pageLoader.jsx/pageLoader";
 import Search from "../../components/search/search";
-
+import toast, { Toaster } from "react-hot-toast";
 import useViewportWidth from "../../Hooks/useViewportWidth";
 
 import { square } from "ldrs";
@@ -74,11 +74,31 @@ const Home = () => {
     "rgb(208, 238, 255)",
   ];
 
+  if (roomType == "zen") {
+    toast("Try drag a task!", {
+      duration: 3000,
+      position: "bottom-right",
+      icon: "✨",
+      removeDelay: 1000,
+    });
+  }
   return (
     <div className={style.home}>
       {/* initial pageloader */}
       <PageLoader option="load" />
-
+      <Toaster
+        toastOptions={{
+          className: "",
+          style: {
+            backgroundColor: "black",
+            fontFamily: "Trebuchet",
+            fontWeight: "900",
+            letterSpacing: "1px",
+            color: "rgb(255, 255, 255)",
+            borderRadius: "15px",
+          },
+        }}
+      />
       {/* Search form Modal */}
       <AnimatePresence>
         {searchOpen && <Search setSearchOpen={setSearchOpen} tasks={tasks} />}

@@ -18,3 +18,29 @@
     font-weight: 900;
     font-size: 70dvw;
 }
+
+.pageLoader>div {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.pageLoader>div>p {
+    font-family: Trebuchet;
+    color: rgb(31, 31, 31);
+    font-weight: 900;
+    line-height: 150px;
+    font-size: 150px;
+}
+
+/* @media (max-width:600px) {
+    .pageLoader>p {
+        font-family: Trebuchet;
+        color: rgb(31, 31, 31);
+        font-weight: 900;
+        font-size: 30dvw;
+
+
+    }
+} */

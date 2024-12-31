@@ -68,7 +68,7 @@ const TaskCard = forwardRef(
         });
     };
 
-    useOutsideClick(ref, () => {
+    useOutsideClick(taskCard, () => {
       if (optionsOpen) setOptionsOpen(false);
     });
 

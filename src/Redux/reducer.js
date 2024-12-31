@@ -1,10 +1,11 @@
-import { GET_ALL_TASKS, GET_ONE_TASK, GET_COMPLETED_TASKS, TASK_SEARCHER } from "./actions";
+import { GET_ALL_TASKS, GET_ONE_TASK, GET_COMPLETED_TASKS, TASK_SEARCHER, SET_UPPER_TASK } from "./actions";
 
 let initialstate = {
     allTasks: [],
     particularTask: [],
     allTasksAux: [],
-    searchedTasks: []
+    searchedTasks: [],
+    upperTask: { id: "", index: 1 }
 };
 
 let reducer = (state = initialstate, action) => {
@@ -33,6 +34,11 @@ let reducer = (state = initialstate, action) => {
                 ...state,
                 allTasksAux: taskSearched,
             };
+
+        case SET_UPPER_TASK:
+            return {
+                ...state, upperTask: { ...state.upperTask, id: action.payload, index: state.upperTask.index + 1 }
+            }
 
 
         default:

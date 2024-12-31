@@ -7,6 +7,7 @@ export const GET_COMPLETED_TASKS = "GET_COMPLETED_TASKS"
 export const GET_ONE_TASK = "GET_ONE_TASK"
 export const CREATE_A_TASK = "CREATE_A_TASK"
 export const TASK_SEARCHER = "TASK_SEARCHER"
+export const SET_UPPER_TASK = "SET_UPPER_TASK"
 
 
 // this use the forst GET to "/api/tasks" route (1/5)
@@ -110,3 +111,11 @@ export const deleteATask = (id) => {
     }
 }
 
+export const setUpperTask = (id) => {
+    return async function (dispatch) {
+        dispatch({
+            type: SET_UPPER_TASK,
+            payload: id
+        })
+    }
+}

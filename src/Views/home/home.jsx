@@ -24,6 +24,7 @@ const Home = () => {
   const [roomType, setRoomType] = useState("normal");
   const [searchOpen, setSearchOpen] = useState(false);
   const [updateTaskFormOpen, setUpdateTaskFormOpen] = useState();
+  const [upperTask, setUpperTask] = useState(0);
 
   // This code detect when its pressed ctrl + K to open the search modal
   useEffect(() => {
@@ -84,6 +85,9 @@ const Home = () => {
       });
     }
   }, [roomType]);
+
+ 
+
   return (
     <div className={style.home}>
       {/* initial pageloader */}
@@ -188,14 +192,14 @@ const Home = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="3"
+                  strokeWidth="3"
                   stroke="currentColor"
                   height="20"
                   width="20"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M12 4.5v15m7.5-7.5h-15"
                   />
                 </svg>
@@ -270,40 +274,18 @@ const Home = () => {
         >
           <AnimatePresence mode="popLayout">
             {tasks.map((task, index) => (
-              <motion.div
+              <TaskCard
                 key={index}
-                className={style.taskCardContainer}
-                initial={{ left: "0%", top: "0%", opacity: 0, scale: 0 }}
-                exit={{ opacity: 0, scale: 0 }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  left:
-                    roomType == "zen"
-                      ? `${
-                          randomNumberInRange(0, 77) - randomNumberInRange(0, 5)
-                        }%`
-                      : "0%",
-                  top:
-                    roomType == "zen"
-                      ? `${
-                          randomNumberInRange(0, 60) -
-                          randomNumberInRange(0, 10)
-                        }%`
-                      : "0%",
-                }}
-                transition={{ ease: "anticipate", duration: 0.5 }}
-              >
-                <TaskCard
-                  taskData={task}
-                  reference={ref}
-                  color={colors[index % colors.length]}
-                  zIndex={1}
-                  taskStatusFiltered={taskStatus}
-                  roomType={roomType}
-                  setUpdateTaskFormOpen={setUpdateTaskFormOpen}
-                />
-              </motion.div>
+                taskData={task}
+                container={ref}
+                color={colors[index % colors.length]}
+                zIndex={upperTask}
+                setUpperTask={setUpperTask}
+                upperTask={upperTask}
+                taskStatusFiltered={taskStatus}
+                roomType={roomType}
+                setUpdateTaskFormOpen={setUpdateTaskFormOpen}
+              />
             ))}
           </AnimatePresence>
         </motion.div>

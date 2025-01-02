@@ -101,7 +101,12 @@ const TaskCard = forwardRef(
         }}
         onDragStart={handleDragStart}
         style={{
-          zIndex: isPinned ? 9999 : taskData._id === index.id ? index.index : 0,
+          zIndex:
+            isPinned || (roomType == "normal" && optionsOpen)
+              ? 9999
+              : taskData._id === index.id
+              ? index.index
+              : 0,
         }}
         initial={{ opacity: 0, scale: 0 }}
         exit={{ opacity: 0, scale: 0 }}
@@ -121,13 +126,6 @@ const TaskCard = forwardRef(
               : taskStatusFiltered == taskData.completed
               ? "all"
               : "none",
-
-          // zIndex:
-          //   taskStatusFiltered === "all"
-          //     ? 1
-          //     : taskStatusFiltered == taskData.completed
-          //     ? upperTask
-          //     : "0",
 
           x: roomType == "normal" && 0,
           y: roomType == "normal" && 0,

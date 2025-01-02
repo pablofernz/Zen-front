@@ -25,14 +25,15 @@ let reducer = (state = initialstate, action) => {
             }
 
         case TASK_SEARCHER:
-            console.log(action.payload)
             const aux2 = [...state.searchedTasks];
-            const taskSearched = action.payload.trim() === "" ? aux2 : aux2.filter((task) =>
-                task.title.toLowerCase().includes(action.payload.toLowerCase()))
-
+            const taskSearched = action.payload.trim() === ""
+                ? aux2
+                : aux2.filter((task) =>
+                    task.title.toLowerCase().includes(action.payload.toLowerCase())
+                );
             return {
                 ...state,
-                allTasksAux: taskSearched,
+                allTasksAux: taskSearched.length === 0 ? null : taskSearched,
             };
 
         case SET_UPPER_TASK:

@@ -18,6 +18,7 @@ import useViewportWidth from "../../Hooks/useViewportWidth";
 const Search = ({ setSearchOpen }) => {
   const dispatch = useDispatch();
   const tasksAvailables = useSelector((state) => state.allTasksAux);
+
   const [preview, setPreview] = useState(false);
   const [taskData, setTaskData] = useState([]);
   const [search, setSearch] = useState("");
@@ -26,9 +27,8 @@ const Search = ({ setSearchOpen }) => {
 
   // this function update the "search" value to the input value
   const searchHandler = (event) => {
-    const value = event.target.value;
-    setSearch(value);
-    dispatch(taskSearcher(value));
+    setSearch(event.target.value);
+    dispatch(taskSearcher(event.target.value));
   };
 
   // This function calls an action by giving it an ID and takes care of looking up that task
@@ -69,6 +69,9 @@ const Search = ({ setSearchOpen }) => {
       });
   };
 
+  useEffect(() => {
+    dispatch(getCompletedTasks(""));
+  }, []);
   return ReactDOM.createPortal(
     <motion.div
       initial={{ opacity: 0, backdropFilter: "blur(0px)" }}

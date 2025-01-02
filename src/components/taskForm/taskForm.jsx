@@ -14,6 +14,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
     title: taskToUpdate?.title || "",
     description: taskToUpdate?.description || "",
     completed: taskToUpdate?.completed || false,
+    createdAt: null,
   });
   const [sentStatus, setSendStatus] = useState("not send");
 
@@ -57,13 +58,33 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
 
   // this grab the data of body and make a POST
   const submit = async () => {
+    const createdHour = new Date();
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const createdAt = createdHour.toLocaleString("en-GB", {
+      timeZone: timeZone,
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    const newBody = {
+      title: body.title,
+      description: body.description,
+      completed: body.completed,
+      createdAt: createdAt.replace(/\//g, "-").replace(",", ""),
+    };
+
     const loading = toast.loading("Creating the task", {
       position: "bottom-right",
     });
     try {
       setSendStatus("sending");
 
-      const response = await dispatch(createATask(body));
+      const response = await dispatch(createATask(newBody));
       if (response.success) {
         toast.dismiss(loading);
         toast.success(response.message, {
@@ -230,6 +251,9 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
                 name="title"
                 onChange={taskToUpdate ? updateHandleChange : postHandleChange}
                 maxLength={80}
+                autocomplete="off"
+                autocorrect="off"
+                spellcheck="false"
               />
               <p className={style.charCounter}>
                 {body.title.length < 10

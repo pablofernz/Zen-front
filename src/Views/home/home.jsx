@@ -86,8 +86,6 @@ const Home = () => {
     }
   }, [roomType]);
 
- 
-
   return (
     <div className={style.home}>
       {/* initial pageloader */}
@@ -145,7 +143,10 @@ const Home = () => {
                 {roomType == "normal" && (
                   <motion.div
                     layoutId="roomButton"
-                    transition={{ ease: "anticipate", duration: 1 }}
+                    transition={{
+                      ease: viewportWidth > 900 && "anticipate",
+                      duration: viewportWidth > 900 && 1,
+                    }}
                     style={{ borderRadius: "7px" }}
                   ></motion.div>
                 )}
@@ -155,7 +156,10 @@ const Home = () => {
                 {roomType == "zen" && (
                   <motion.div
                     layoutId="roomButton"
-                    transition={{ ease: "anticipate", duration: 1 }}
+                    transition={{
+                      ease: viewportWidth > 600 && "anticipate",
+                      duration: viewportWidth > 600 && 1,
+                    }}
                     style={{ borderRadius: "7px" }}
                   ></motion.div>
                 )}
@@ -324,3 +328,4 @@ const Home = () => {
 };
 
 export default Home;
+

@@ -7,7 +7,6 @@
     position: relative;
     position: fixed;
     top: 0;
-
     z-index: 10;
 }
 
@@ -105,11 +104,16 @@
     text-align: center;
 }
 
+.selectButton>option {
+    color: gray;
+    font-weight: 900;
+    font-family: Trebuchet;
+}
 
-.taskSearcher>div {
+.tasksContainer {
     border-radius: 15px;
     background-color: rgb(15, 15, 15);
-    height: 80%;
+    height: 85%;
     width: 100%;
     padding: 10px;
     display: flex;
@@ -118,6 +122,23 @@
     flex-direction: column;
     gap: 10px;
     overflow-y: scroll;
+}
+
+.loaderContainer {
+    border-radius: 15px;
+    background-color: rgb(15, 15, 15);
+    height: 85%;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(91, 91, 91);
+    font-family: Trebuchet;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-align: center;
+    font-size: 20px;
 }
 
 .taskCard {
@@ -235,7 +256,7 @@
     }
 
     .selectButton {
-        width: 120px;
+        width: 180px;
         background-color: rgb(44, 44, 44);
         height: calc(80% - 20px);
         border-radius: 10px;

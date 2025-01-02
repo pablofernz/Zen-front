@@ -23,6 +23,10 @@ export const getAllTasks = () => {
 
         } catch (error) {
             console.log(error)
+            dispatch({
+                type: GET_ALL_TASKS,
+                payload: []
+            })
         }
     }
 }
@@ -36,10 +40,14 @@ export const getCompletedTasks = (completed) => {
                 type: GET_COMPLETED_TASKS,
                 payload: response.data.data
             })
-            return response.data.success
+
 
         } catch (error) {
-            console.log(error)
+            dispatch({
+                type: GET_COMPLETED_TASKS,
+                payload: null
+            })
+
         }
     }
 }

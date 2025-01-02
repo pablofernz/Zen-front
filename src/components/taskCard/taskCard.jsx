@@ -27,6 +27,7 @@ const TaskCard = forwardRef(
   ) => {
     const [isPinned, setIsPinned] = useState(false);
     const [optionsOpen, setOptionsOpen] = useState(false);
+    const [wasDragged, setWasDragged] = useState(false);
 
     const dispatch = useDispatch();
     const viewportWidth = useViewportWidth();
@@ -73,17 +74,15 @@ const TaskCard = forwardRef(
     });
 
     const handleDragStart = () => {
+      setWasDragged(true);
       dispatch(setUpperTask(taskData._id));
+      setWasDragged(false);
+
       // setNewIndex((prev) => prev + 1); // Incrementar el zIndex localmente
       // setUpperTask(newIndex + 1); // Opcionalmente, si necesitas actualizar el estado en el padre
     };
 
     const index = useSelector((state) => state.upperTask);
-    useEffect(() => {
-      if (taskData._id === index.id && index.index !== 0) {
-        console.log("XD");
-      }
-    }, [index]);
 
     return (
       <motion.div
@@ -102,9 +101,13 @@ const TaskCard = forwardRef(
         }}
         onDragStart={handleDragStart}
         style={{
-          zIndex: taskData._id === index.id ? index.index : index.index - 1,
+          zIndex: isPinned ? 9999 : taskData._id === index.id ? index.index : 0,
         }}
+        initial={{ opacity: 0, scale: 0 }}
+        exit={{ opacity: 0, scale: 0 }}
         animate={{
+          opacity: 1,
+          scale: 1,
           filter:
             taskStatusFiltered === "all"
               ? "blur(0px) opacity(1) saturate(1)"

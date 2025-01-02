@@ -24,7 +24,7 @@
 }
 
 body {
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     /* Siempre muestra la barra de desplazamiento vertical */
 }

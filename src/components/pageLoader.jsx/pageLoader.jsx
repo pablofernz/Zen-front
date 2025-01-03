@@ -7,7 +7,11 @@ const PageLoader = ({ option }) => {
     <motion.div
       initial={{ y: option == "load" ? "0dvh" : "100dvh" }}
       animate={{ y: option == "load" ? "100dvh" : "0dvh" }}
-      transition={{ duration: 1, ease: "easeInOut", delay: 1 }}
+      transition={{
+        duration: 1,
+        ease: "easeInOut",
+        delay: option == "load" && 0.5,
+      }}
       className={style.pageLoader}
     >
       {useViewportWidth() > 900 ? (

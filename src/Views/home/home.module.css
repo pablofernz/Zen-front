@@ -138,7 +138,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0px 5px;
-    transition: all 0.3s ease;
+    /* transition: all 0.3s ease; */
     position: relative;
     border: 2px solid rgb(0, 0, 0);
 }
@@ -258,11 +258,42 @@
     position: relative;
 }
 
+.noTasks {
+    position: absolute;
+    height: 100%;
+    width: calc(100% - 20px);
+    height: calc(65dvh);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 25px;
+    z-index: 10;
+    text-align: center;
+}
+
+.noTasks>h1 {
+    line-height: 1;
+    font-size: 60px;
+    color: black;
+    font-weight: 900;
+    letter-spacing: -5px;
+    font-family: "Segoe UI";
+}
+
+.noTasks>p {
+    width: 600px;
+    font-size: 18px;
+    color: rgb(90, 90, 90);
+    font-family: Trebuchet;
+    font-weight: 900;
+}
+
 .loader {
     position: absolute;
     height: 100%;
     width: calc(100% - 20px);
-    min-height: calc(100dvh - 180px);
+    height: calc(65dvh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -276,7 +307,6 @@
     width: calc(100% - 200px);
     height: auto;
     min-height: calc(100dvh - 130px);
-
     gap: 30px;
     row-gap: 40px;
     flex-basis: calc(100% - 20px);
@@ -286,8 +316,8 @@
 
 @media (max-width: 650px) {
     .tasksContainer {
-        align-items: center;
-
+        align-items: start;
+        min-height: auto;
     }
 }
 
@@ -324,6 +354,34 @@
     .taskSearcher>p {
         padding-left: 0px;
     }
+
+    .noTasks {
+        width: calc(100% - 20px);
+        height: calc(55dvh);
+    }
+
+    .noTasks>p {
+        font-size: 12px;
+        width: 95%;
+    }
+
+    /* 
+    .tasksContainer {
+        display: grid;
+        justify-content: center;
+        align-items: start;
+        grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+        width: calc(100% - 200px);
+        height: auto;
+        min-height: calc(100dvh - 130px);
+        background-color: red;
+        gap: 30px;
+        row-gap: 40px;
+        flex-basis: calc(100% - 20px);
+        position: relative;
+        flex-wrap: wrap;
+    } */
+
 }
 
 .inspiration {

@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 const PageLoader = ({ option }) => {
   return (
     <motion.div
-      initial={{ y: option == "load" ? "0dvh" : "100dvh" }}
-      animate={{ y: option == "load" ? "100dvh" : "0dvh" }}
+      initial={{ y: option == "show" ? "0dvh" : "100dvh" }}
+      animate={{ y: option == "show" ? "100dvh" : "0dvh" }}
       transition={{
         duration: 1,
         ease: "easeInOut",
-        delay: option == "load" && 0.5,
+        delay: option == "show" && 0.5,
       }}
       className={style.pageLoader}
     >

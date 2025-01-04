@@ -1,22 +1,45 @@
 import style from "./userAccess.module.css";
-import { AnimatePresence, easeIn, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useDispatch } from "react-redux";
 import validate from "./validations";
 import useViewportWidth from "../../Hooks/useViewportWidth";
+import { loginUser, creatingUser } from "../../Redux/actions";
+import { Toaster, toast } from "react-hot-toast";
+import { square } from "ldrs";
+import { useNavigate } from "react-router-dom";
 
-const Register = ({ setAccessUsed }) => {
-  const dispatch = useDispatch();
-  const width = useViewportWidth();
+square.register();
+
+const getDay = () => {
+  const createdHour = new Date();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const createdAt = createdHour.toLocaleString("en-GB", {
+    timeZone: timeZone,
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  return createdAt;
+};
+
+const Register = ({ setAccessUsed, setExit, navigate }) => {
   const [registerData, setRegisterData] = useState({
     email: "",
     password: "",
+    joinedAt: "",
   });
   const [errors, setErrors] = useState({
     email: "",
     password: "",
   });
+  const [registered, setRegistered] = useState(null);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const registerHandler = (event) => {
@@ -24,10 +47,11 @@ const Register = ({ setAccessUsed }) => {
     setRegisterData({
       ...registerData,
       [event.target.name]: event.target.value,
+      joinedAt: getDay().replace(/\//g, "-").replace(",", ""),
     });
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     const errorsBeforeSubmit = validate(registerData);
 
     if (!!Object.keys(errorsBeforeSubmit).length) {
@@ -36,12 +60,43 @@ const Register = ({ setAccessUsed }) => {
         email: errorsBeforeSubmit.email || "",
         password: errorsBeforeSubmit.password || "",
       }));
-      console.log("hubo errores");
       return;
     }
 
-    console.log("registro exitoso", registerData);
+    setRegistered(false);
+    const loading = toast.loading("Sign up...", {
+      position: "bottom-right",
+    });
+
+    const response = await creatingUser(registerData);
+    if (response.status == 200) {
+      setRegistered(true);
+      toast.dismiss(loading);
+      toast.success(response.message, {
+        position: "bottom-right",
+      });
+      setTimeout(() => {
+        setExit(true);
+        setTimeout(() => {
+          window.location.href = "/noteboard";
+        }, 1000);
+      }, 500);
+    }
+
+    if (response.status == 400) {
+      toast.dismiss(loading);
+      toast.error(response.message, {
+        position: "bottom-right",
+        duration: 3000,
+      });
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: response.message.includes("email") && response.message,
+      }));
+      setRegistered(null);
+    }
   };
+
   return (
     <motion.div
       key="login"
@@ -53,7 +108,7 @@ const Register = ({ setAccessUsed }) => {
     >
       <header>
         <h1>Are you new here?</h1>
-        <p>Complete the form to create your noteboard</p>
+        <p>Complete to create your noteboard</p>
       </header>
 
       <div>
@@ -150,13 +205,67 @@ const Register = ({ setAccessUsed }) => {
           />
 
           <label
-            className={`${style.label} ${errors.email && style.labelError}`}
+            className={`${style.label} ${errors.password && style.labelError}`}
           >
             <p>{errors.password || "Password"}</p>
           </label>
         </div>
         <div className={style.buttonsContainer}>
-          <button onClick={submitHandler}>Create account</button>
+          <button
+            className={`${style.submitButton} ${
+              registered == false
+                ? style.loading
+                : registered == true
+                ? style.loaded
+                : ""
+            }`}
+            disabled={registered == true || registered == false}
+            onClick={submitHandler}
+          >
+            <AnimatePresence mode="popLayout">
+              {registered == true ? (
+                <motion.p
+                  key="loaded"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ease: "anticipate", duration: 0.5 }}
+                >
+                  Creating your noteboard
+                </motion.p>
+              ) : registered == false ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0, y: 20 }}
+                  exit={{ opacity: 0, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ease: "anticipate", duration: 0.5 }}
+                >
+                  <l-square
+                    size="30"
+                    stroke="5"
+                    stroke-length="0.25"
+                    bg-opacity="0.1"
+                    speed="2"
+                    color="rgb(169, 169, 169)"
+                    style={{ marginTop: "-1px" }}
+                    transition={{ ease: "anticipate", duration: 0.5 }}
+                  />
+                </motion.div>
+              ) : (
+                registered == null && (
+                  <motion.p
+                    key="not loaded"
+                    initial={{ opacity: 0, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ ease: "anticipate", duration: 0.5 }}
+                  >
+                    Create account
+                  </motion.p>
+                )
+              )}
+            </AnimatePresence>
+          </button>
           <div className={style.othersButtonsContainer}>
             <button>
               <svg
@@ -206,8 +315,7 @@ const Register = ({ setAccessUsed }) => {
   );
 };
 
-const Login = ({ setAccessUsed }) => {
-  const width = useViewportWidth();
+const Login = ({ setAccessUsed, setExit, navigate }) => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -216,6 +324,8 @@ const Login = ({ setAccessUsed }) => {
     email: "",
     password: "",
   });
+
+  const [logged, setLogged] = useState(null);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -227,7 +337,7 @@ const Login = ({ setAccessUsed }) => {
     });
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     const errorsBeforeSubmit = validate(loginData);
 
     if (!!Object.keys(errorsBeforeSubmit).length) {
@@ -236,11 +346,108 @@ const Login = ({ setAccessUsed }) => {
         email: errorsBeforeSubmit.email || "",
         password: errorsBeforeSubmit.password || "",
       }));
-      console.log("hubo errores");
       return;
     }
+    setLogged(false);
+    const loading = toast.loading("Loggin in...", {
+      position: "bottom-right",
+    });
 
-    console.log("inicio de sesion exitoso", loginData);
+    const response = await loginUser(loginData, false);
+
+    if (response.status == 200) {
+      setLogged(true);
+      toast.dismiss(loading);
+      toast.success(response.message, {
+        position: "bottom-right",
+      });
+
+      setTimeout(() => {
+        setExit(true);
+        setTimeout(() => {
+          window.location.href = "/noteboard";
+        }, 1000);
+      }, 500);
+    }
+
+    if (response.status == 404) {
+      toast.dismiss(loading);
+      toast.error(response.message, {
+        position: "bottom-right",
+      });
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: response.message,
+      }));
+      setLogged(null);
+    }
+    if (response.status == 401) {
+      toast.dismiss(loading);
+      toast.error(response.message, {
+        position: "bottom-right",
+      });
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: response.message,
+      }));
+      setLogged(null);
+    }
+  };
+
+  const demoAccessHandler = async () => {
+    const demoUser = {
+      email: "johndoe@gmail.com",
+      password: "password",
+    };
+
+    setLogged(false);
+    const loading = toast.loading("Loggin in demo account...", {
+      position: "bottom-right",
+    });
+
+    const response = await loginUser(demoUser, true);
+
+    if (response.status == 200) {
+      setLogged(true);
+      toast.dismiss(loading);
+      toast.success(response.message, {
+        position: "bottom-right",
+      });
+
+      setTimeout(() => {
+        setExit(true);
+        setTimeout(() => {
+          window.location.href = "/noteboard";
+        }, 1000);
+      }, 500);
+    }
+
+    if (response.status == 404) {
+      toast.dismiss(loading);
+      toast.error(response.message, {
+        position: "bottom-right",
+      });
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: response.message,
+      }));
+      setLogged(null);
+    }
+    if (response.status == 401) {
+      toast.dismiss(loading);
+      toast.error(response.message, {
+        position: "bottom-right",
+      });
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: response.message,
+      }));
+      setLogged(null);
+    }
   };
 
   return (
@@ -255,6 +462,27 @@ const Login = ({ setAccessUsed }) => {
       <header>
         <h1>Welcome Back</h1>
         <p>Good to see you again!</p>
+        <div className={style.guestAccessContainer}>
+          <button
+            className={style.guestAccessButton}
+            onClick={demoAccessHandler}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              height="20"
+              width="20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+          <p className={style.guestAccessTooltip}>Access with a demo account</p>
+        </div>
       </header>
 
       <div>
@@ -358,7 +586,61 @@ const Login = ({ setAccessUsed }) => {
           </label>
         </div>
         <div className={style.buttonsContainer}>
-          <button onClick={submitHandler}>Log In</button>
+          <button
+            className={`${style.submitButton} ${
+              logged == false
+                ? style.loading
+                : logged == true
+                ? style.loaded
+                : ""
+            }`}
+            disabled={logged == true || logged == false}
+            onClick={submitHandler}
+          >
+            <AnimatePresence mode="popLayout">
+              {logged == true ? (
+                <motion.p
+                  key="loaded"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ease: "anticipate", duration: 0.5 }}
+                >
+                  Loading your noteboard
+                </motion.p>
+              ) : logged == false ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0, y: 20 }}
+                  exit={{ opacity: 0, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ease: "anticipate", duration: 0.5 }}
+                >
+                  <l-square
+                    size="30"
+                    stroke="5"
+                    stroke-length="0.25"
+                    bg-opacity="0.1"
+                    speed="2"
+                    color="rgb(169, 169, 169)"
+                    style={{ marginTop: "-1px" }}
+                    transition={{ ease: "anticipate", duration: 0.5 }}
+                  />
+                </motion.div>
+              ) : (
+                logged == null && (
+                  <motion.p
+                    key="not loaded"
+                    initial={{ opacity: 0, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ ease: "anticipate", duration: 0.5 }}
+                  >
+                    Login
+                  </motion.p>
+                )
+              )}
+            </AnimatePresence>
+          </button>
           <div className={style.othersButtonsContainer}>
             <button>
               <svg
@@ -408,8 +690,9 @@ const Login = ({ setAccessUsed }) => {
   );
 };
 
-const UserAccess = ({ close }) => {
+const UserAccess = ({ close, setExit }) => {
   const [accessUsed, setAccessUsed] = useState("login");
+  const navigate = useNavigate();
   const width = useViewportWidth();
   // this detech when "Escape" key its pressed to close the form
   useEffect(() => {
@@ -441,7 +724,20 @@ const UserAccess = ({ close }) => {
       className={style.component}
     >
       <div className={style.background} />
-
+      <Toaster
+        toastOptions={{
+          className: "",
+          style: {
+            height: "50px",
+            backgroundColor: "rgb(20,20,20)",
+            fontFamily: "Trebuchet",
+            fontWeight: "900",
+            letterSpacing: "1px",
+            color: "gray",
+            borderRadius: "15px",
+          },
+        }}
+      />
       <motion.div
         initial={{
           y: "100dvh",
@@ -468,13 +764,23 @@ const UserAccess = ({ close }) => {
         >
           <div className={style.rightSide}>
             <AnimatePresence>
-              {accessUsed == "login" && <Login setAccessUsed={setAccessUsed} />}
+              {accessUsed == "login" && (
+                <Login
+                  setAccessUsed={setAccessUsed}
+                  setExit={setExit}
+                  navigate={navigate}
+                />
+              )}
             </AnimatePresence>
           </div>
           <div className={style.leftSide}>
             <AnimatePresence>
               {accessUsed == "register" && (
-                <Register setAccessUsed={setAccessUsed} />
+                <Register
+                  setAccessUsed={setAccessUsed}
+                  setExit={setExit}
+                  navigate={navigate}
+                />
               )}
             </AnimatePresence>
           </div>

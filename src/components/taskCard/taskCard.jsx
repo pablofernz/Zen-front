@@ -86,6 +86,7 @@ const TaskCard = forwardRef(
 
     return (
       <motion.div
+        layout
         ref={taskCard}
         drag={roomType == "normal" || isPinned ? false : true}
         dragConstraints={container} //ref of his parent container

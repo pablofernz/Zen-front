@@ -3,16 +3,18 @@ import style from "./404.module.css";
 import useViewportWidth from "../../Hooks/useViewportWidth";
 import { useState } from "react";
 import PageLoader from "../../components/pageLoader.jsx/pageLoader";
+import Cookies from "js-cookie";
 
 const NotFound = () => {
   const navigate = useNavigate();
-  const viewportWidth = useViewportWidth();
-
+  const token =
+    Cookies.get("session_token") ||
+    window.sessionStorage.getItem("session_token");
   const [exit, setExit] = useState(false);
   return (
     <div className={style.container}>
-      <PageLoader option={"load"} />
-      {exit && <PageLoader option={"noload"} />}
+      <PageLoader option={"show"} />
+      {exit && <PageLoader option={"hidden"} />}
       <div className={style.page}>
         <img
           className={style.errorImage}
@@ -25,7 +27,7 @@ const NotFound = () => {
           onClick={() => {
             setExit(true);
             setTimeout(() => {
-              navigate("/");
+              window.location.href = token ? "/noteboard" : "/";
             }, 1000);
           }}
         >

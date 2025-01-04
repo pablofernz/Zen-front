@@ -9,13 +9,16 @@ import PageLoader from "../../components/pageLoader.jsx/pageLoader";
 import Search from "../../components/search/search";
 import toast, { Toaster } from "react-hot-toast";
 import useViewportWidth from "../../Hooks/useViewportWidth";
+import Cookies from "js-cookie";
 
 import { square } from "ldrs";
+import { useNavigate } from "react-router-dom";
 square.register();
 
 const Home = () => {
   const dispatch = useDispatch();
   const viewportWidth = useViewportWidth();
+  const navigate = useNavigate();
 
   const tasks = useSelector((state) => state.allTasks);
 
@@ -44,6 +47,11 @@ const Home = () => {
 
   // this useeffect fetch all the tasks when page is loaded
   useEffect(() => {
+    if (
+      !Cookies.get("session_token") &&
+      !window.sessionStorage.getItem("session_token")
+    )
+      window.location.href = "/";
     dispatch(getAllTasks());
   }, []);
 
@@ -89,7 +97,7 @@ const Home = () => {
   return (
     <div className={style.home}>
       {/* initial pageloader */}
-      <PageLoader option="load" />
+      <PageLoader option="show" />
       <Toaster
         toastOptions={{
           className: "",
@@ -168,51 +176,66 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className={style.center}>
-          <div className={style.centerContainer}>
-            <button
-              onClick={() => {
-                setSearchOpen(true);
-              }}
-              className={style.taskSearcher}
-            >
-              <p>
-                {viewportWidth > 900 ? "Search a task..." : "Search a task"}
-              </p>
-              {viewportWidth > 900 && (
-                <div>
-                  <p>Ctrl + K</p>
-                </div>
-              )}
-            </button>
-            <button
-              className={style.newTaskButton}
-              onClick={() => {
-                setFormOpen(true);
-              }}
-            >
-              <div className={style.newTaskIcon}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="3"
-                  stroke="currentColor"
-                  height="20"
-                  width="20"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              </div>
 
-              <p>New Task</p>
-            </button>
-          </div>
-        </div>
+        <motion.div layout className={style.center}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            layout // Aplica layout al contenedor que envuelve ambos botones
+            className={style.centerContainer}
+          >
+            {/* Botón de búsqueda */}
+            <AnimatePresence mode="popLayout">
+              <motion.button
+                onClick={() => setSearchOpen(true)}
+                className={style.taskSearcher}
+                layout
+              >
+                <p>
+                  {viewportWidth > 900 ? "Search a task..." : "Search a task"}
+                </p>
+                {viewportWidth > 900 && (
+                  <div>
+                    <p>Ctrl + K</p>
+                  </div>
+                )}
+              </motion.button>
+
+              {tasks !== null && (
+                <motion.button
+                  key="buttonHeader"
+                  layoutId="taskFormButton"
+                  className={style.newTaskButton}
+                  onClick={() => setFormOpen(true)}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0 }}
+                >
+                  <div className={style.newTaskIcon}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="3"
+                      stroke="currentColor"
+                      height="20"
+                      width="20"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                  </div>
+
+                  <p>New Task</p>
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </motion.div>
         <div className={style.rightSide}>
           <div className={style.buttonsContainer}>
             <button
@@ -268,16 +291,66 @@ const Home = () => {
 
       {/* Tasks container */}
       <main>
+        <AnimatePresence>
+          {tasks == null && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              exit={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                transition: { duration: 1, ease: "anticipate" },
+              }}
+              layout
+              key="noTasks"
+              className={style.noTasks}
+            >
+              <h1>YOU DON'T HAVE ANY TASK!</h1>
+              <p>
+                Your list is empty. It's the perfect time to add new tasks and
+                start organizing your day. Create one now and get productive!
+              </p>
+              <motion.button
+                layoutId="taskFormButton"
+                key="buttonMain"
+                className={style.newTaskButton}
+                onClick={() => {
+                  setFormOpen(true);
+                }}
+              >
+                <div className={style.newTaskIcon}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="3"
+                    stroke="currentColor"
+                    height="20"
+                    width="20"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                </div>
+
+                <p>Create One</p>
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: tasks.length > 0 && 1 }}
-          layout
+          animate={{ opacity: tasks?.length > 0 && 1 }}
           className={style.tasksContainer}
           ref={ref}
           key="tasks"
         >
-          <AnimatePresence mode="popLayout">
-            {tasks.map((task, index) => (
+          <AnimatePresence>
+            {tasks?.map((task, index) => (
               <TaskCard
                 key={index}
                 taskData={task}
@@ -295,7 +368,7 @@ const Home = () => {
         </motion.div>
 
         <AnimatePresence>
-          {tasks.length <= 0 && (
+          {tasks !== null && tasks.length <= 0 && (
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               exit={{ opacity: 0, scale: 0 }}

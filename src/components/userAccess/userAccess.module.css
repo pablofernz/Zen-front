@@ -17,6 +17,15 @@
     background-color: rgba(0, 0, 0, 0.493);
 }
 
+.toastContainer {
+    width: auto;
+    height: auto;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+}
+
 .card {
     margin: 10px;
     height: 550px;
@@ -26,7 +35,62 @@
     z-index: 2;
     background-color: rgb(0, 0, 0);
     overflow: hidden;
+}
 
+.guestAccessContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    z-index: 2;
+}
+
+.guestAccessButton {
+    height: 40px;
+    width: 40px;
+    background-color: rgb(25, 25, 25);
+    border-radius: 15px;
+    border: 1px solid rgb(37, 37, 37);
+    box-shadow: 0px 10px 10px 0px black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+}
+
+.guestAccessTooltip {
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
+    margin-top: 15px;
+    text-wrap: nowrap;
+    position: absolute;
+    color: rgb(181, 181, 181);
+    padding: 5px 10px;
+    background-color: rgb(39, 39, 39);
+    font-family: Trebuchet;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.guestAccessTooltip::after {
+    content: "";
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    bottom: 100%;
+    margin-bottom: -9px;
+    background-color: inherit;
+    left: 0;
+    margin-left: 12px;
+    border-radius: 3px;
+    rotate: 45deg;
+}
+
+
+.guestAccessButton:hover+.guestAccessTooltip {
+    opacity: 1;
 }
 
 .card>div {
@@ -77,6 +141,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    position: relative;
 }
 
 .loginContent>header>h1 {
@@ -148,6 +213,8 @@
     outline: none;
     transition: all 0.3s ease;
     border: 1px solid transparent;
+    background-color: rgb(22, 22, 22);
+    box-shadow: 0px 0px 10px rgb(24, 24, 24) inset, 0px 10px 10px -5px black;
 }
 
 
@@ -180,11 +247,13 @@
 
 .inputError {
     background-color: rgb(39, 0, 0);
-    color: rgb(220, 96, 96);
+    color: rgb(164, 0, 0);
+    box-shadow: 0px 0px 10px rgb(72, 0, 0) inset, 0px 10px 10px -5px black;
+
 }
 
 .inputError:focus {
-    color: rgb(209, 64, 64);
+    color: rgb(229, 72, 72);
     border: 1px solid rgb(93, 39, 39);
 }
 
@@ -208,7 +277,7 @@
     gap: 15px;
 }
 
-.buttonsContainer>button {
+.submitButton {
     width: 80%;
     height: 50px;
     border-radius: 10px;
@@ -218,6 +287,24 @@
     letter-spacing: 1px;
     box-shadow: 0px 10px 10px 0px rgb(0, 0, 0);
     background-color: rgb(224, 224, 224);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+    border: 1px solid rgb(34, 34, 34);
+    overflow: hidden;
+
+}
+
+.loading {
+    background-color: rgb(24, 24, 24);
+    box-shadow: 0px 0px 10px rgb(30, 30, 30) inset, 0px 10px 10px -5px black;
+}
+
+.loaded {
+    background-color: rgb(224, 224, 224);
+    color: rgb(0, 0, 0);
+    cursor: not-allowed;
 }
 
 .othersButtonsContainer {
@@ -231,6 +318,7 @@
 }
 
 .othersButtonsContainer>button {
+    background-color: rgb(22, 22, 22);
     height: 100%;
     width: 50%;
     background-color: rgb(22, 22, 22);
@@ -244,7 +332,12 @@
     letter-spacing: 1px;
     color: rgb(103, 103, 103);
     border: 1px solid rgb(34, 34, 34);
+    transition: all 0.3s ease;
+}
 
+.othersButtonsContainer>button:hover {
+    box-shadow: 0px 0px 10px rgb(29, 29, 29) inset, 0px 10px 10px -5px black;
+    color: rgb(149, 149, 149);
 
 }
 
@@ -347,22 +440,6 @@
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .imageSlider {
     position: absolute;
     height: 100%;
@@ -371,6 +448,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 3;
 
 }
 
@@ -412,10 +490,11 @@
 @media (max-width:700px) {
     .card {
         width: calc(100dvw - 20px);
+        border-radius: 20px;
     }
 
     .card>div {
-
+        border-radius: 15px;
         overflow: visible;
     }
 

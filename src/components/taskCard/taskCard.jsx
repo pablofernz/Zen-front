@@ -15,13 +15,11 @@ const TaskCard = forwardRef(
     {
       taskData,
       color,
-      zIndex,
-      // setUpperTask,
-      upperTask,
       taskStatusFiltered,
       roomType,
       setUpdateTaskFormOpen,
       container,
+      background
     },
     ref
   ) => {
@@ -134,7 +132,7 @@ const TaskCard = forwardRef(
         transition={{ ease: "anticipate", duration: 1 }}
       >
         {/* The shadow of the task card */}
-        {viewportWidth > 700 && (
+        {viewportWidth > 700 && background && (
           <div
             className={style.background}
             style={{ backgroundColor: color }}

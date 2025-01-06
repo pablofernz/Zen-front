@@ -156,7 +156,7 @@
     font-weight: 600;
     font-family: Trebuchet;
     letter-spacing: 1px;
-    filter: brightness(0.2);
+    filter: brightness(0.3);
     line-height: 28px;
     pointer-events: none;
 }
@@ -167,7 +167,7 @@
     font-weight: 600;
     font-family: Trebuchet;
     letter-spacing: 1px;
-    filter: brightness(0.55);
+    filter: brightness(0.65);
     white-space: wrap;
     word-break: break-word;
     overflow-wrap: break-word;

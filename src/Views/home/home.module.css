@@ -352,7 +352,7 @@
     .home>header {
         flex-direction: column;
         height: 160px;
-        margin-top: 10px;
+        margin-top: 0px;
     }
 
     .leftSide, .center, .rightSide {
@@ -365,7 +365,6 @@
 
     .leftSide {
         height: 40px;
-
     }
 
     .roomTypeContainer {

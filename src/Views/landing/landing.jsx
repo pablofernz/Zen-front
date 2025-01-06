@@ -6,7 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import Cookies from "js-cookie";
 
 const Landing = () => {
-  const [accesModalOpen, setAccesModalOpen] = useState(false);
+  const [accesModalOpen, setAccesModalOpen] = useState(true);
   const [exit, setExit] = useState(false);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const Landing = () => {
           <UserAccess close={setAccesModalOpen} setExit={setExit} />
         )}
       </AnimatePresence>
-      <PageLoader option="show" />
+      {/* <PageLoader option="show" /> */}
       {exit && <PageLoader option="hidden" />}
       <div className={style.icon}>
         <p>zen</p>

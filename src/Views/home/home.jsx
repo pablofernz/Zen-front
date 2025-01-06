@@ -135,46 +135,50 @@ const Home = () => {
       {/* Things on top of the page */}
       <header>
         <div className={style.leftSide}>
-          <div
-            className={style.zenButton}
-            onClick={() => {
-              setRoomType(roomType == "normal" ? "zen" : "normal");
-            }}
-          >
-            <p>zen</p>
-            <div className={style.roomTypeContainer}>
-              <div
-                onClick={() => {
-                  setRoomType("normal");
-                }}
-              >
-                {roomType == "normal" && (
-                  <motion.div
-                    layoutId="roomButton"
-                    transition={{
-                      ease: viewportWidth > 900 && "anticipate",
-                      duration: viewportWidth > 900 && 1,
-                    }}
-                    style={{ borderRadius: "7px" }}
-                  ></motion.div>
-                )}
-                <p>OFF</p>
-              </div>
-              <div>
-                {roomType == "zen" && (
-                  <motion.div
-                    layoutId="roomButton"
-                    transition={{
-                      ease: viewportWidth > 600 && "anticipate",
-                      duration: viewportWidth > 600 && 1,
-                    }}
-                    style={{ borderRadius: "7px" }}
-                  ></motion.div>
-                )}
-                <p>ON</p>
+          {viewportWidth > 700 ? (
+            <div
+              className={style.zenButton}
+              onClick={() => {
+                setRoomType(roomType == "normal" ? "zen" : "normal");
+              }}
+            >
+              <p>zen</p>
+              <div className={style.roomTypeContainer}>
+                <div
+                  onClick={() => {
+                    setRoomType("normal");
+                  }}
+                >
+                  {roomType == "normal" && (
+                    <motion.div
+                      layoutId="roomButton"
+                      transition={{
+                        ease: viewportWidth > 900 && "anticipate",
+                        duration: viewportWidth > 900 && 1,
+                      }}
+                      style={{ borderRadius: "7px" }}
+                    ></motion.div>
+                  )}
+                  <p>OFF</p>
+                </div>
+                <div>
+                  {roomType == "zen" && (
+                    <motion.div
+                      layoutId="roomButton"
+                      transition={{
+                        ease: viewportWidth > 600 && "anticipate",
+                        duration: viewportWidth > 600 && 1,
+                      }}
+                      style={{ borderRadius: "7px" }}
+                    ></motion.div>
+                  )}
+                  <p>ON</p>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <p className={style.zenText}>zen</p>
+          )}
         </div>
 
         <motion.div layout className={style.center}>

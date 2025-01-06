@@ -23,6 +23,11 @@
     src: url(./assets/fonts/Priego\ Semibold.otf) format("opentype");
 }
 
+:root {
+    color-scheme: light;
+    /* Indica que tu sitio está diseñado solo para modo claro */
+}
+
 body {
     overflow-y: auto;
     overflow-x: hidden;

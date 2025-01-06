@@ -10,7 +10,7 @@ const validate = (userData) => {
     }
 
     if (!userData.password) {
-        errors.password = "You need a password";
+        errors.password = "Password needed";
     } else {
         if (!/^.{8,}$/.test(userData.password)) {
             errors.password = "Must have 8 characters"

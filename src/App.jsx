@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Views/home/home";
@@ -7,6 +7,14 @@ import Landing from "./Views/landing/landing";
 import NotFound from "./Views/404 Not Found/404";
 
 function App() {
+  useEffect(() => {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      document.documentElement.style.colorScheme = "light";
+    }
+  }, []);
   return (
     <div className="App">
       <Routes>

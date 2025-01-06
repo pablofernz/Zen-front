@@ -49,6 +49,17 @@
     cursor: pointer;
 }
 
+.zenText {
+    font-size: 30px;
+    font-family: Trebuchet;
+    font-weight: 900;
+    color: black;
+    height: 85%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .zenButton>p {
     font-size: 50px;
     font-family: Trebuchet;
@@ -315,21 +326,32 @@
 }
 
 @media (max-width: 650px) {
-    .tasksContainer {
-        align-items: start;
-        min-height: auto;
+
+    .home>main {
+        padding: 0px 0px 10px 0px;
     }
+
+    .tasksContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: calc(100% - 0px);
+        height: auto;
+        gap: 15px;
+    }
+
 }
 
 
 @media (max-width: 900px) {
     .home {
-        gap: 20px;
+        gap: 10px;
     }
 
     .home>header {
         flex-direction: column;
-        height: 200px;
+        height: 160px;
         margin-top: 10px;
     }
 
@@ -338,6 +360,11 @@
         width: 100%;
         justify-content: center;
         padding-right: 0px;
+        padding-left: 0px;
+    }
+
+    .leftSide {
+        height: 40px;
 
     }
 
@@ -365,22 +392,7 @@
         width: 95%;
     }
 
-    /* 
-    .tasksContainer {
-        display: grid;
-        justify-content: center;
-        align-items: start;
-        grid-template-columns: repeat(auto-fit, minmax(300px, auto));
-        width: calc(100% - 200px);
-        height: auto;
-        min-height: calc(100dvh - 130px);
-        background-color: red;
-        gap: 30px;
-        row-gap: 40px;
-        flex-basis: calc(100% - 20px);
-        position: relative;
-        flex-wrap: wrap;
-    } */
+
 
 }
 

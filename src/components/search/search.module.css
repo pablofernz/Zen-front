@@ -148,7 +148,7 @@
     background-color: rgb(20, 20, 20);
     border-radius: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0px 0px 10px black;
+    box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.674);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,23 +237,14 @@
     }
 
     .taskIcon2 {
-        color: rgb(46, 46, 46);
-        height: 100%;
-        width: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        opacity: 1;
+        display: none;
     }
 
     .taskCard:hover .taskIcon2 {
         opacity: 1;
     }
 
-    .closeButton {
-        width: 50px;
-    }
+    
 
     .selectButton {
         width: 180px;

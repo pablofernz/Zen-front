@@ -134,7 +134,7 @@ const TaskCard = forwardRef(
         transition={{ ease: "anticipate", duration: 1 }}
       >
         {/* The shadow of the task card */}
-        {viewportWidth > 350 && (
+        {viewportWidth > 700 && (
           <div
             className={style.background}
             style={{ backgroundColor: color }}

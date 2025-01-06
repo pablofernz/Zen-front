@@ -38,7 +38,7 @@ const Register = ({ setAccessUsed, setExit, navigate }) => {
     email: "",
     password: "",
   });
-  const [registered, setRegistered] = useState(null);
+  const [registered, setRegistered] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -582,7 +582,7 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
             className={`${style.label} ${errors.password && style.labelError}`}
           >
             <p>{errors.password || "Password"}</p>
-            <button style={{ color: "gray" }}>Recover password</button>
+            <button style={{ color: "rgb(59, 59, 59)" }}>I forgot it</button>
           </label>
         </div>
         <div className={style.buttonsContainer}>
@@ -622,7 +622,6 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
                     bg-opacity="0.1"
                     speed="2"
                     color="rgb(169, 169, 169)"
-                    style={{ marginTop: "-1px" }}
                     transition={{ ease: "anticipate", duration: 0.5 }}
                   />
                 </motion.div>

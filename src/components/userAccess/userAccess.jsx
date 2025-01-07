@@ -1,8 +1,7 @@
 import style from "./userAccess.module.css";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { useDispatch } from "react-redux";
 import validate from "./validations";
 import useViewportWidth from "../../Hooks/useViewportWidth";
 import { loginUser, creatingUser } from "../../Redux/actions";
@@ -38,7 +37,7 @@ const Register = ({ setAccessUsed, setExit, navigate }) => {
     email: "",
     password: "",
   });
-  const [registered, setRegistered] = useState(false);
+  const [registered, setRegistered] = useState(null);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -77,6 +76,7 @@ const Register = ({ setAccessUsed, setExit, navigate }) => {
       });
       setTimeout(() => {
         setExit(true);
+        window.sessionStorage.clear();
         setTimeout(() => {
           window.location.href = "/noteboard";
         }, 1000);
@@ -349,15 +349,11 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
       return;
     }
     setLogged(false);
-    const loading = toast.loading("Loggin in...", {
-      position: "bottom-right",
-    });
 
     const response = await loginUser(loginData, false);
 
     if (response.status == 200) {
       setLogged(true);
-      toast.dismiss(loading);
       toast.success(response.message, {
         position: "bottom-right",
       });
@@ -365,13 +361,13 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
       setTimeout(() => {
         setExit(true);
         setTimeout(() => {
+          window.sessionStorage.clear();
           window.location.href = "/noteboard";
         }, 1000);
       }, 500);
     }
 
     if (response.status == 404) {
-      toast.dismiss(loading);
       toast.error(response.message, {
         position: "bottom-right",
       });
@@ -383,7 +379,6 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
       setLogged(null);
     }
     if (response.status == 401) {
-      toast.dismiss(loading);
       toast.error(response.message, {
         position: "bottom-right",
       });
@@ -419,6 +414,9 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
       setTimeout(() => {
         setExit(true);
         setTimeout(() => {
+          window.sessionStorage.removeItem("trial_mode");
+          window.sessionStorage.removeItem("trial_mode_tasks");
+          window.sessionStorage.setItem("demo_access", true);
           window.location.href = "/noteboard";
         }, 1000);
       }, 500);
@@ -689,7 +687,7 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
   );
 };
 
-const UserAccess = ({ close, setExit }) => {
+const UserAccess = forwardRef(({ close, setExit }, ref) => {
   const [accessUsed, setAccessUsed] = useState("login");
   const navigate = useNavigate();
   const width = useViewportWidth();
@@ -807,6 +805,6 @@ const UserAccess = ({ close, setExit }) => {
     </motion.div>,
     document.getElementById("userAccess")
   );
-};
+});
 
 export default UserAccess;

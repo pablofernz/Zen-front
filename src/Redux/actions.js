@@ -26,7 +26,6 @@ const tokenConfig = {
 export const loginUser = async (body, isDemo) => {
     try {
         const response = await axios.post(`${userURL}/login`, body)
-        console.log(response.data.token)
         if (isDemo == true) {
             window.sessionStorage.setItem("session_token", response.data.token)
         } else {

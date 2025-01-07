@@ -1,43 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PageLoader from "../../components/pageLoader.jsx/pageLoader";
 import UserAccess from "../../components/userAccess/userAccess";
 import style from "./landing.module.css";
 import { AnimatePresence } from "framer-motion";
 import Cookies from "js-cookie";
-import TaskCard from "../../components/taskCard/taskCard";
 
 const Landing = () => {
   const [accesModalOpen, setAccesModalOpen] = useState(false);
   const [exit, setExit] = useState(false);
+  const accessForm = useRef(null);
 
   useEffect(() => {
     Cookies.remove("session_token");
     window.sessionStorage.removeItem("session_token");
+    window.sessionStorage.removeItem("demo_access");
   }, []);
-  const colors = [
-    "rgb(151, 255, 182)",
-    "rgb(177, 125, 255)",
-    "rgb(125, 194, 255)",
-    "rgb(255, 125, 125)",
-    "rgb(125, 255, 222)",
-    "rgb(125, 125, 255)",
-    "rgb(255, 255, 255)",
-    "rgb(125, 242, 255)",
-    "rgb(181, 207, 255)",
-    "rgb(255, 225, 125)",
-    "rgb(210, 255, 192)",
-    "rgb(252, 192, 255)",
-    "rgb(255, 211, 192)",
-    "rgb(208, 238, 255)",
-  ];
+
+  const tryHandler = () => {
+    window.sessionStorage.setItem("trial_mode", true);
+    window.sessionStorage.setItem("trial_mode_tasks", "[]");
+
+    setExit(true);
+    setTimeout(() => {
+      window.location.href = "/noteboard";
+    }, 1000);
+  };
+
   return (
     <div className={style.landingPage}>
       <AnimatePresence>
         {accesModalOpen && (
-          <UserAccess close={setAccesModalOpen} setExit={setExit} />
+          <UserAccess
+            close={setAccesModalOpen}
+            setExit={setExit}
+            reference={accessForm}
+          />
         )}
       </AnimatePresence>
-      {/* <PageLoader option="show" /> */}
+      <PageLoader option="show" />
       {exit && <PageLoader option="hidden" />}
 
       <header>
@@ -47,10 +47,9 @@ const Landing = () => {
         <div className={style.upper}>
           <h1>Focus. Organize. Achieve</h1>
           <h2>
-            Zen is here to help you take control of your day. Create your task
-            lists, focus on what matters, and mark off your accomplishments—all
-            with a clean, minimalist interface designed for clarity and
-            simplicity.
+            Zen helps you organize your day with ease: create tasks, focus on
+            priorities, and track your progress—all in a clean, minimalist
+            interface.
           </h2>
         </div>
         <div className={style.bottom}>
@@ -62,10 +61,17 @@ const Landing = () => {
           </div>
           <div className={style.cardSpace2}>
             <div className={style.buttonsContainer}>
-              <button className={style.getStarted} onClick={() => {
-                setAccesModalOpen(true)
-              }}>Get started</button>
-              <button className={style.alternativeButton}>Try it out</button>
+              <button
+                className={style.getStarted}
+                onClick={() => {
+                  setAccesModalOpen(true);
+                }}
+              >
+                Get started
+              </button>
+              <button className={style.alternativeButton} onClick={tryHandler}>
+                Try it out
+              </button>
             </div>
             <div
               className={style.card}

@@ -12,15 +12,20 @@ import useViewportWidth from "../../Hooks/useViewportWidth";
 import Cookies from "js-cookie";
 
 import { square } from "ldrs";
-import { useNavigate } from "react-router-dom";
 square.register();
 
 const Home = () => {
   const dispatch = useDispatch();
   const viewportWidth = useViewportWidth();
-  const navigate = useNavigate();
+  const [trialTasks, setTrialTasks] = useState(
+    JSON.parse(window.sessionStorage.getItem("trial_mode_tasks")) || []
+  );
 
-  const tasks = useSelector((state) => state.allTasks);
+  const tasks = !window.sessionStorage.getItem("trial_mode")
+    ? useSelector((state) => state.allTasks)
+    : JSON.parse(window.sessionStorage.getItem("trial_mode_tasks"))?.length == 0
+    ? null
+    : trialTasks;
 
   const [formOpen, setFormOpen] = useState(false);
   const [taskStatus, setTaskStatus] = useState("all");
@@ -49,21 +54,16 @@ const Home = () => {
   useEffect(() => {
     if (
       !Cookies.get("session_token") &&
-      !window.sessionStorage.getItem("session_token")
+      !window.sessionStorage.getItem("session_token") &&
+      !window.sessionStorage.getItem("trial_mode") &&
+      !window.sessionStorage.getItem("demo_access")
     )
       window.location.href = "/";
-    dispatch(getAllTasks());
+
+    if (!window.sessionStorage.getItem("trial_mode")) dispatch(getAllTasks());
   }, []);
 
   const ref = useRef(null);
-
-  // literally the name says it
-  function randomNumberInRange(min, max) {
-    const array = new Uint32Array(1);
-    window.crypto.getRandomValues(array);
-    const randomValue = array[0] / (0xffffffff + 1); // Normalizar a rango [0, 1)
-    return Math.floor(randomValue * (max - min + 1) + min); // Escalar a rango deseado
-  }
 
   // An array of colors for each task :p
   const colors = [
@@ -82,6 +82,11 @@ const Home = () => {
     "rgb(255, 211, 192)",
     "rgb(208, 238, 255)",
   ];
+
+  const tasksFiltered =
+    taskStatus == "all" || viewportWidth > 700
+      ? tasks
+      : tasks?.filter((task) => task.completed == taskStatus);
 
   useEffect(() => {
     if (roomType == "zen") {
@@ -118,7 +123,13 @@ const Home = () => {
 
       {/* Create task form Modal */}
       <AnimatePresence>
-        {formOpen && <TaskForm close={setFormOpen} toUpdate={false} />}
+        {formOpen && (
+          <TaskForm
+            close={setFormOpen}
+            toUpdate={false}
+            setTrialTasks={setTrialTasks}
+          />
+        )}
       </AnimatePresence>
 
       {/* Update task form Modal */}
@@ -128,6 +139,7 @@ const Home = () => {
             close={setUpdateTaskFormOpen}
             toUpdate={true}
             taskToUpdate={updateTaskFormOpen}
+            setTrialTasks={setTrialTasks}
           />
         )}
       </AnimatePresence>
@@ -135,7 +147,7 @@ const Home = () => {
       {/* Things on top of the page */}
       <header>
         <div className={style.leftSide}>
-          {viewportWidth > 700 ? (
+          {viewportWidth > 900 ? (
             <div
               className={style.zenButton}
               onClick={() => {
@@ -252,7 +264,10 @@ const Home = () => {
                   <motion.div
                     layoutId="backgroundButton"
                     className={style.buttonBackground}
-                    transition={{ ease: "anticipate", duration: 1 }}
+                    transition={{
+                      ease: "anticipate",
+                      duration: viewportWidth > 700 ? 1 : 0.5,
+                    }}
                     style={{ borderRadius: "10px" }}
                   ></motion.div>
                 )}
@@ -267,7 +282,10 @@ const Home = () => {
                 <motion.div
                   layoutId="backgroundButton"
                   className={style.buttonBackground}
-                  transition={{ ease: "anticipate", duration: 1 }}
+                  transition={{
+                    ease: "anticipate",
+                    duration: viewportWidth > 700 ? 1 : 0.5,
+                  }}
                   style={{ borderRadius: "10px" }}
                 ></motion.div>
               )}
@@ -283,7 +301,10 @@ const Home = () => {
                   <motion.div
                     layoutId="backgroundButton"
                     className={style.buttonBackground}
-                    transition={{ ease: "anticipate", duration: 1 }}
+                    transition={{
+                      ease: "anticipate",
+                      duration: viewportWidth > 700 ? 1 : 0.5,
+                    }}
                     style={{ borderRadius: "10px" }}
                   ></motion.div>
                 )}
@@ -352,9 +373,10 @@ const Home = () => {
           className={style.tasksContainer}
           ref={ref}
           key="tasks"
+          layout
         >
-          <AnimatePresence>
-            {tasks?.map((task, index) => (
+          <AnimatePresence mode="popLayout">
+            {tasksFiltered?.map((task, index) => (
               <TaskCard
                 key={index}
                 taskData={task}
@@ -366,6 +388,7 @@ const Home = () => {
                 taskStatusFiltered={taskStatus}
                 roomType={roomType}
                 setUpdateTaskFormOpen={setUpdateTaskFormOpen}
+                setTrialTasks={setTrialTasks}
               />
             ))}
           </AnimatePresence>

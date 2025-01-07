@@ -7,7 +7,7 @@ import { createATask, getAllTasks, updateATask } from "../../Redux/actions";
 
 import toast, { Toaster } from "react-hot-toast";
 
-const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
+const TaskForm = ({ close, toUpdate, taskToUpdate, setTrialTasks }) => {
   const dispatch = useDispatch();
   // this makes sense when want update a task, obtaining the old data from the parent before the update
   const [body, setBody] = useState({
@@ -71,96 +71,153 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
       hour12: false,
     });
 
-    const newBody = {
-      title: body.title,
-      description: body.description,
-      completed: body.completed,
-      createdAt: createdAt.replace(/\//g, "-").replace(",", ""),
-    };
+    if (window.sessionStorage.getItem("trial_mode")) {
+      const newBody = {
+        title: body.title,
+        description: body.description,
+        completed: body.completed,
+        createdAt: createdAt.replace(/\//g, "-").replace(",", ""),
+        _id:
+          JSON.parse(window.sessionStorage.getItem("trial_mode_tasks")).length +
+          1,
+      };
 
-    const loading = toast.loading("Creating the task", {
-      position: "bottom-right",
-    });
-    try {
-      setSendStatus("sending");
+      if (newBody.title.length < 10) {
+        setSendStatus("not send");
+        toast.error("Title too short", {
+          position: "bottom-right",
+        });
+      } else {
+        const tasks =
+          JSON.parse(window.sessionStorage.getItem("trial_mode_tasks")) || [];
 
-      const response = await dispatch(createATask(newBody));
-      if (response.success) {
-        toast.dismiss(loading);
-        toast.success(response.message, {
+        tasks.push(newBody);
+        window.sessionStorage.setItem(
+          "trial_mode_tasks",
+          JSON.stringify(tasks)
+        );
+
+        toast.success("Tasks created", {
           position: "bottom-right",
         });
         setSendStatus("sent");
 
+        setTrialTasks(tasks);
         setTimeout(() => {
           close(false);
-          dispatch(getAllTasks());
         }, 1500);
-      } else {
-        setSendStatus("not send");
+      }
+    } else {
+      const newBody = {
+        title: body.title,
+        description: body.description,
+        completed: body.completed,
+        createdAt: createdAt.replace(/\//g, "-").replace(",", ""),
+      };
+
+      const loading = toast.loading("Creating the task", {
+        position: "bottom-right",
+      });
+      try {
+        setSendStatus("sending");
+
+        const response = await dispatch(createATask(newBody));
+        if (response.success) {
+          toast.dismiss(loading);
+          toast.success(response.message, {
+            position: "bottom-right",
+          });
+          setSendStatus("sent");
+
+          setTimeout(() => {
+            close(false);
+            dispatch(getAllTasks());
+          }, 1500);
+        } else {
+          setSendStatus("not send");
+          toast.dismiss(loading);
+          toast.error(response.errors[0] || response.message, {
+            position: "bottom-right",
+          });
+        }
+      } catch (error) {
+        console.log(error);
         toast.dismiss(loading);
-        toast.error(response.errors[0] || response.message, {
+        toast.error(error.message, {
           position: "bottom-right",
         });
       }
-    } catch (error) {
-      console.log(error);
-      toast.dismiss(loading);
-      toast.error(error.message, {
-        position: "bottom-right",
-      });
     }
   };
 
   // this grab the data of new body and make a PUT
   const update = async () => {
-    const loading = toast.loading("Updating the task", {
-      position: "bottom-right",
-    });
-    try {
-      setSendStatus("sending");
+    if (window.sessionStorage.getItem("trial_mode")) {
+      const tasksAux = JSON.parse(
+        window.sessionStorage.getItem("trial_mode_tasks")
+      );
 
-      const response = await dispatch(updateATask(taskToUpdate._id, body));
-      console.log(response);
+      const updatedTasks = tasksAux.map((task) => {
+        if (task._id === taskToUpdate._id) {
+          return {
+            ...task,
+            title: body.title,
+            description: body.description,
+            completed: body.completed,
+          };
+        }
+        return task; // Deja los demás objetos sin cambios
+      });
 
-      if (response.success) {
+      window.sessionStorage.setItem(
+        "trial_mode_tasks",
+        JSON.stringify(updatedTasks)
+      );
+
+      toast.success("Task updated", {
+        position: "bottom-right",
+      });
+      setSendStatus("sent");
+
+      setTrialTasks(updatedTasks);
+      setTimeout(() => {
+        close(false);
+      }, 1500);
+    } else {
+      const loading = toast.loading("Updating the task", {
+        position: "bottom-right",
+      });
+      try {
+        setSendStatus("sending");
+
+        const response = await dispatch(updateATask(taskToUpdate._id, body));
+        console.log(response);
+
+        if (response.success) {
+          toast.dismiss(loading);
+          toast.success(response.message, {
+            position: "bottom-right",
+          });
+          setSendStatus("sent");
+
+          setTimeout(() => {
+            close(false);
+            dispatch(getAllTasks());
+          }, 1500);
+        } else {
+          setSendStatus("not send");
+          toast.dismiss(loading);
+          toast.error(response.errors[0], {
+            position: "bottom-right",
+          });
+        }
+      } catch (error) {
         toast.dismiss(loading);
-        toast.success(response.message, {
-          position: "bottom-right",
-        });
-        setSendStatus("sent");
-
-        setTimeout(() => {
-          close(false);
-          dispatch(getAllTasks());
-        }, 1500);
-      } else {
-        setSendStatus("not send");
-        toast.dismiss(loading);
-        toast.error(response.errors[0], {
+        toast.error(error.message, {
           position: "bottom-right",
         });
       }
-    } catch (error) {
-      toast.dismiss(loading);
-      toast.error(error.message, {
-        position: "bottom-right",
-      });
     }
-
-    // setSendStatus("pending");
-    // console.log(body);
-    // dispatch(updateATask(taskToUpdate._id, body))
-    //   .then((response) => {
-    //     setSendStatus("sent");
-    //     setTimeout(() => {
-    //       close(false);
-    //       dispatch(getAllTasks());
-    //     }, 1500);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
 
   return ReactDOM.createPortal(
@@ -251,9 +308,9 @@ const TaskForm = ({ close, toUpdate, taskToUpdate }) => {
                 name="title"
                 onChange={taskToUpdate ? updateHandleChange : postHandleChange}
                 maxLength={80}
-                autocomplete="off"
-                autocorrect="off"
-                spellcheck="false"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
               />
               <p className={style.charCounter}>
                 {body.title.length < 10

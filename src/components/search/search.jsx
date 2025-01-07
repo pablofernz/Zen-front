@@ -72,6 +72,7 @@ const Search = ({ setSearchOpen }) => {
   useEffect(() => {
     dispatch(getCompletedTasks(""));
   }, []);
+
   return ReactDOM.createPortal(
     <motion.div
       initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -143,6 +144,7 @@ const Search = ({ setSearchOpen }) => {
                   </svg>
                 </button>
               </header>
+
               <AnimatePresence>
                 {tasksAvailables == null && (
                   <motion.div
@@ -253,6 +255,7 @@ const Search = ({ setSearchOpen }) => {
                 className={style.backButton}
                 onClick={() => {
                   setPreview(false);
+                  setTaskData([]);
                 }}
               >
                 <svg

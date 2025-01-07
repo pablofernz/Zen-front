@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import useViewportWidth from "../../Hooks/useViewportWidth";
 import useOutsideClick from "../../Hooks/clickOutside";
+
 const TaskCard = forwardRef(
   (
     {
@@ -19,7 +20,8 @@ const TaskCard = forwardRef(
       roomType,
       setUpdateTaskFormOpen,
       container,
-      background
+      background,
+      setTrialTasks,
     },
     ref
   ) => {
@@ -31,19 +33,32 @@ const TaskCard = forwardRef(
     const viewportWidth = useViewportWidth();
 
     const taskCard = useRef(null);
+
     // This function is responsible for deleting a task by the ID provided when it is called
     const deleteHandler = () => {
-      dispatch(deleteATask(taskData._id))
-        .then((response) => {
-          console.log(response);
-          setOptionsOpen(false);
-          setTimeout(() => {
-            dispatch(getAllTasks());
-          }, 500);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (window.sessionStorage.getItem("trial_mode")) {
+        const tasks = JSON.parse(
+          window.sessionStorage.getItem("trial_mode_tasks")
+        );
+
+        const tasksFiltered = tasks.filter((task) => task._id !== taskData._id);
+        window.sessionStorage.setItem(
+          "trial_mode_tasks",
+          JSON.stringify(tasksFiltered)
+        );
+        setTrialTasks(tasksFiltered);
+      } else {
+        dispatch(deleteATask(taskData._id))
+          .then((response) => {
+            setOptionsOpen(false);
+            setTimeout(() => {
+              dispatch(getAllTasks());
+            }, 500);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     };
 
     // This function update the status of the task
@@ -54,17 +69,35 @@ const TaskCard = forwardRef(
         completed: !taskData.completed,
       };
 
-      dispatch(updateATask(taskData._id, newBody))
-        .then((response) => {
-          console.log(response);
-          setOptionsOpen(false);
-          setTimeout(() => {
-            dispatch(getAllTasks());
-          }, 500);
-        })
-        .catch((error) => {
-          console.log(error);
+      if (window.sessionStorage.getItem("trial_mode")) {
+        const tasksAux = JSON.parse(
+          window.sessionStorage.getItem("trial_mode_tasks")
+        );
+
+        const updatedTasks = tasksAux.map((task) => {
+          if (task._id === taskData._id) {
+            return { ...task, completed: !taskData.completed };
+          }
+          return task; // Deja los demás objetos sin cambios
         });
+        window.sessionStorage.setItem(
+          "trial_mode_tasks",
+          JSON.stringify(updatedTasks)
+        );
+
+        setTrialTasks(updatedTasks);
+      } else {
+        dispatch(updateATask(taskData._id, newBody))
+          .then((response) => {
+            setOptionsOpen(false);
+            setTimeout(() => {
+              dispatch(getAllTasks());
+            }, 500);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     };
 
     useOutsideClick(taskCard, () => {
@@ -85,6 +118,7 @@ const TaskCard = forwardRef(
     return (
       <motion.div
         layout
+        key={taskData._id}
         ref={taskCard}
         drag={roomType == "normal" || isPinned ? false : true}
         dragConstraints={container} //ref of his parent container
@@ -107,8 +141,8 @@ const TaskCard = forwardRef(
               ? index.index
               : 0,
         }}
-        initial={{ opacity: 0, scale: 0 }}
-        exit={{ opacity: 0, scale: 0 }}
+        initial={viewportWidth > 700 && { opacity: 0, scale: 0 }}
+        exit={viewportWidth > 700 && { opacity: 0, scale: 0 }}
         animate={{
           opacity: 1,
           scale: 1,

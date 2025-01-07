@@ -28,6 +28,11 @@
     /* Indica que tu sitio está diseñado solo para modo claro */
 }
 
+html {
+    scrollbar-gutter: stable;
+
+}
+
 body {
     overflow-y: auto;
     overflow-x: hidden;

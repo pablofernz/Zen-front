@@ -12,7 +12,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    backdrop-filter: blur(3px);
 }
 
 .zenText {
@@ -27,6 +26,11 @@
 .landingPage>main {
     height: calc(100% - 70px);
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .upper {
@@ -38,11 +42,10 @@
     flex-direction: column;
     gap: 20px;
     padding-bottom: 20px;
-
 }
 
 .upper>h1 {
-    font-size: 80px;
+    font-size: 70px;
     line-height: 1;
     font-family: Trebuchet;
     font-weight: 900;

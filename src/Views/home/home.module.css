@@ -21,6 +21,116 @@
     padding-bottom: 100px;
 }
 
+.modalTrialMode {
+    position: fixed;
+    top: 0;
+    height: 100lvh;
+    width: 100lvw;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.502);
+}
+
+.modalBackground {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+}
+
+.modalCard {
+    margin: 10px;
+    z-index: 0;
+    border-radius: 20px;
+    height: auto;
+    width: 450px;
+    padding: 5px;
+    background-color: rgb(15, 15, 15);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0px 20px 30px -10px rgba(35, 35, 35, 0.765);
+}
+
+
+.modalCard>header {
+    background-color: rgb(25, 25, 25);
+    border-radius: 15px;
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+    border: 1px solid rgb(24, 24, 24)
+
+}
+
+.headerIcon {
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.headerTitle {
+    color: gray;
+
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    font-family: Trebuchet;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+
+.modalCard>div {
+    height: calc(100% - 90px);
+    width: 100%;
+    background-color: rgb(20, 20, 20);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0px;
+    border: 1px solid rgb(24, 24, 24)
+}
+
+.modalCard>div>p {
+    color: gray;
+    width: 80%;
+    text-align: center;
+    font-size: 18px;
+}
+
+.modalCard>footer {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 5px;
+}
+
+.signUpButton {
+    background-color: rgb(209, 209, 209);
+    color: black;
+    padding: 5px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
 /* ----------- THINGS ON TOP OF THE PAGE ----------------- */
 
 .home>header {

@@ -191,7 +191,6 @@ const TaskForm = ({ close, toUpdate, taskToUpdate, setTrialTasks }) => {
         setSendStatus("sending");
 
         const response = await dispatch(updateATask(taskToUpdate._id, body));
-        console.log(response);
 
         if (response.success) {
           toast.dismiss(loading);

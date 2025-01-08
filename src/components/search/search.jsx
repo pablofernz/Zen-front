@@ -15,9 +15,14 @@ square.register();
 
 import useViewportWidth from "../../Hooks/useViewportWidth";
 
-const Search = ({ setSearchOpen }) => {
+const Search = ({ setSearchOpen, trialTasks }) => {
+  const trialMode = !!window.sessionStorage.getItem("trial_mode");
   const dispatch = useDispatch();
-  const tasksAvailables = useSelector((state) => state.allTasksAux);
+  const [trialTasksAux, setTrialTasksAux] = useState(trialTasks);
+
+  const tasksAvailables = trialMode
+    ? trialTasksAux
+    : useSelector((state) => state.allTasksAux);
 
   const [preview, setPreview] = useState(false);
   const [taskData, setTaskData] = useState([]);
@@ -27,19 +32,33 @@ const Search = ({ setSearchOpen }) => {
 
   // this function update the "search" value to the input value
   const searchHandler = (event) => {
-    setSearch(event.target.value);
-    dispatch(taskSearcher(event.target.value));
+    const newSearchValue = event.target.value;
+    setSearch(newSearchValue);
+
+    if (trialMode) {
+      const filteredData = trialTasks.filter((task) =>
+        task.title.toLowerCase().includes(newSearchValue.toLowerCase())
+      );
+      setTrialTasksAux(filteredData.length === 0 ? null : filteredData);
+    } else {
+      setSearch(event.target.value);
+      dispatch(taskSearcher(event.target.value));
+    }
   };
 
   // This function calls an action by giving it an ID and takes care of looking up that task
   const searchByIDHandler = (id) => {
-    dispatch(getOneTask(id))
-      .then((response) => {
-        setTaskData(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (trialMode) {
+      setTaskData(tasksAvailables.filter((task) => task._id == id));
+    } else {
+      dispatch(getOneTask(id))
+        .then((response) => {
+          setTaskData(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   // this detect when "Escape" key its pressed to close the modal
@@ -58,19 +77,38 @@ const Search = ({ setSearchOpen }) => {
 
   // this function is responsible for obtaining all tasks depending on their status
   const completeHandler = (event) => {
-    dispatch(getCompletedTasks(event.target.value))
-      .then(() => {
-        setStatusTaskSearched(
-          event.target.selectedOptions[0].getAttribute("status")
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const isCompleted =
+      event.target.value == ""
+        ? ""
+        : event.target.value == "true"
+        ? true
+        : false;
+
+    if (trialMode) {
+      const filteredData =
+        event.target.value == ""
+          ? trialTasks
+          : trialTasks.filter((task) => task.completed == isCompleted);
+
+      setTrialTasksAux(filteredData.length == 0 ? null : filteredData);
+      setStatusTaskSearched(
+        event.target.selectedOptions[0].getAttribute("status")
+      );
+    } else {
+      dispatch(getCompletedTasks(event.target.value))
+        .then(() => {
+          setStatusTaskSearched(
+            event.target.selectedOptions[0].getAttribute("status")
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   useEffect(() => {
-    dispatch(getCompletedTasks(""));
+    !trialMode && dispatch(getCompletedTasks(""));
   }, []);
 
   return ReactDOM.createPortal(

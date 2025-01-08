@@ -33,6 +33,10 @@ const Home = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [updateTaskFormOpen, setUpdateTaskFormOpen] = useState();
   const [upperTask, setUpperTask] = useState(0);
+  const [trialModaOpen, setTrialModalOpen] = useState(
+    window.sessionStorage.getItem("trial_mode") ? true : false
+  );
+  const [exit, setExit] = useState(false);
 
   // This code detect when its pressed ctrl + K to open the search modal
   useEffect(() => {
@@ -50,7 +54,7 @@ const Home = () => {
     };
   }, []);
 
-  // this useeffect fetch all the tasks when page is loaded
+  // this useeffect fetch all the tasks when page is loaded and check if its not have any access, redirect to the landing
   useEffect(() => {
     if (
       !Cookies.get("session_token") &&
@@ -103,6 +107,7 @@ const Home = () => {
     <div className={style.home}>
       {/* initial pageloader */}
       <PageLoader option="show" />
+      {exit && <PageLoader option="hidden" />}
       <Toaster
         toastOptions={{
           className: "",
@@ -118,7 +123,13 @@ const Home = () => {
       />
       {/* Search form Modal */}
       <AnimatePresence>
-        {searchOpen && <Search setSearchOpen={setSearchOpen} tasks={tasks} />}
+        {searchOpen && (
+          <Search
+            setSearchOpen={setSearchOpen}
+            tasks={tasks}
+            trialTasks={trialTasks}
+          />
+        )}
       </AnimatePresence>
 
       {/* Create task form Modal */}
@@ -141,6 +152,103 @@ const Home = () => {
             taskToUpdate={updateTaskFormOpen}
             setTrialTasks={setTrialTasks}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Create task form Modal */}
+      <AnimatePresence>
+        {trialModaOpen && (
+          <motion.div
+            initial={{ opacity: 1, backdropFilter: "blur(0px)" }}
+            exit={{
+              opacity: 0,
+              backdropFilter: "blur(0px)",
+              transition: { delay: 0.5 },
+            }}
+            animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
+            className={style.modalTrialMode}
+          >
+            <motion.div
+              initial={{ scale: 1 }}
+              exit={{ scale: 0, rotate: -22.5 }}
+              animate={{ scale: 1, transition: { delay: 0.5 } }}
+              transition={{ ease: "anticipate", duration: 1 }}
+              className={style.modalCard}
+            >
+              <header>
+                <div className={style.headerIcon}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    height="25"
+                    width="25"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <p className={style.headerTitle}>
+                  {viewportWidth > 400
+                    ? "This is a trial mode access"
+                    : "Trial access mode"}
+                </p>
+                <button
+                  className={style.headerIcon}
+                  onClick={() => {
+                    setTrialModalOpen(false);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    height="30"
+                    width="30"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </header>
+
+              <div>
+                <p>
+                  Create and organize tasks for free, but to save them and
+                  unlock more features, create an account.
+                </p>
+              </div>
+              <footer>
+                <button
+                  className={style.signUpButton}
+                  onClick={() => {
+                    setExit(true);
+                    setTimeout(() => {
+                      window.location.pathname = "/";
+                      window.sessionStorage.setItem("access_method", "login");
+                    }, 1000);
+                  }}
+                >
+                  Sign Up
+                </button>
+                <button
+                  onClick={() => {
+                    setTrialModalOpen(false);
+                  }}
+                >
+                  Continue
+                </button>
+              </footer>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 

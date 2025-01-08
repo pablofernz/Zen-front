@@ -1,10 +1,12 @@
 import { GET_ALL_TASKS, GET_ONE_TASK, GET_COMPLETED_TASKS, TASK_SEARCHER, SET_UPPER_TASK } from "./actions";
 
+const sessionStoreTasks = JSON.parse(window.sessionStorage.getItem("trial_mode_tasks"))
+
 let initialstate = {
     allTasks: [],
     particularTask: [],
-    allTasksAux: [],
-    searchedTasks: [],
+    allTasksAux: sessionStoreTasks || [],
+    searchedTasks:sessionStoreTasks || [],
     upperTask: { id: "", index: 1 }
 };
 

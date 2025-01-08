@@ -619,6 +619,7 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
                     stroke-length="0.25"
                     bg-opacity="0.1"
                     speed="2"
+                    style={{ marginTop: "-1px" }}
                     color="rgb(169, 169, 169)"
                     transition={{ ease: "anticipate", duration: 0.5 }}
                   />
@@ -687,8 +688,8 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
   );
 };
 
-const UserAccess = forwardRef(({ close, setExit }, ref) => {
-  const [accessUsed, setAccessUsed] = useState("login");
+const UserAccess = forwardRef(({ close, setExit, accessMethod }, ref) => {
+  const [accessUsed, setAccessUsed] = useState(accessMethod || "login");
   const navigate = useNavigate();
   const width = useViewportWidth();
   // this detech when "Escape" key its pressed to close the form

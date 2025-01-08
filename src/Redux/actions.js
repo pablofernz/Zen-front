@@ -156,7 +156,6 @@ export const deleteATask = (id) => {
     return async function () {
         try {
             const response = await axios.delete(`${apiURL}/tasks/${id}`, tokenConfig)
-            if (response) console.log(response.data.message)
 
         } catch (error) {
             console.log(error)

@@ -10,7 +10,7 @@ const Landing = () => {
     window.sessionStorage.getItem("access_method") ? true : false
   );
   const [exit, setExit] = useState(false);
-  const [accessMethod, setAccessMethod] = useState();
+  const [formType, setFormType] = useState();
   const [isLogged, setIsLogged] = useState(!!Cookies.get("session_token"));
   const accessForm = useRef(null);
 
@@ -38,7 +38,7 @@ const Landing = () => {
             close={setAccesModalOpen}
             setExit={setExit}
             reference={accessForm}
-            accessMethod={accessMethod}
+            formType={formType}
           />
         )}
       </AnimatePresence>
@@ -57,7 +57,7 @@ const Landing = () => {
               transition={{ ease: "anticipate", duration: 1 }}
               className={style.signUp}
               onClick={() => {
-                setAccessMethod("register");
+                setFormType("register");
                 setAccesModalOpen(true);
               }}
             >
@@ -112,7 +112,7 @@ const Landing = () => {
                   className={style.getStarted}
                   onClick={() => {
                     setAccesModalOpen(true);
-                    setAccessMethod("login");
+                    setFormType("login");
                   }}
                 >
                   Get started

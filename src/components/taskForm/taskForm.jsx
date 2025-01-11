@@ -38,7 +38,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate, setTrialTasks }) => {
       ...body,
       [event.target.name]:
         event.target.value.charAt(0).toUpperCase() +
-        event.target.value.slice(1).replace(/^\s+/, "").replace(/\s\s+/g, " "),
+        event.target.value.slice(1).replace(/\s\s+/g, " "),
     });
   };
 
@@ -46,7 +46,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate, setTrialTasks }) => {
   const updateHandleChange = (event) => {
     const updatedValue =
       event.target.value.charAt(0).toUpperCase() +
-      event.target.value.slice(1).replace(/^\s+/, " ").replace(/\s\s+/g, " ");
+      event.target.value.slice(1).replace(/\s\s+/g, " ");
 
     const updatedBody = {
       ...body,
@@ -122,6 +122,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate, setTrialTasks }) => {
         setSendStatus("sending");
 
         const response = await dispatch(createATask(newBody));
+        console.log(response)
         if (response.success) {
           toast.dismiss(loading);
           toast.success(response.message, {
@@ -136,7 +137,7 @@ const TaskForm = ({ close, toUpdate, taskToUpdate, setTrialTasks }) => {
         } else {
           setSendStatus("not send");
           toast.dismiss(loading);
-          toast.error(response.errors[0] || response.message, {
+          toast.error(response.errors || response.message, {
             position: "bottom-right",
           });
         }

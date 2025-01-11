@@ -4,10 +4,11 @@ import { forwardRef, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import validate from "./validations";
 import useViewportWidth from "../../Hooks/useViewportWidth";
-import { loginUser, creatingUser } from "../../Redux/actions";
+import { loginUser, creatingUser, thirdPartyAccess } from "../../Redux/actions";
 import { Toaster, toast } from "react-hot-toast";
 import { square } from "ldrs";
 import { useNavigate } from "react-router-dom";
+import googleAuth from "../../auth/googleAuth";
 
 square.register();
 
@@ -27,7 +28,12 @@ const getDay = () => {
   return createdAt;
 };
 
-const Register = ({ setAccessUsed, setExit, navigate }) => {
+const Register = ({
+  setAccessUsed,
+  setExit,
+  navigate,
+  firebaseAuthHandler,
+}) => {
   const [registerData, setRegisterData] = useState({
     email: "",
     password: "",
@@ -68,6 +74,38 @@ const Register = ({ setAccessUsed, setExit, navigate }) => {
     });
 
     const response = await creatingUser(registerData);
+    if (response.status == 200) {
+      setRegistered(true);
+      toast.dismiss(loading);
+      toast.success(response.message, {
+        position: "bottom-right",
+      });
+      setTimeout(() => {
+        setExit(true);
+        window.sessionStorage.clear();
+        setTimeout(() => {
+          window.location.href = "/noteboard";
+        }, 1000);
+      }, 500);
+    }
+
+    if (response.status == 400) {
+      toast.dismiss(loading);
+      toast.error(response.message, {
+        position: "bottom-right",
+        duration: 3000,
+      });
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: response.message.includes("email") && response.message,
+      }));
+      setRegistered(null);
+    }
+  };
+  const signUpWithGoogle = async () => {
+    const userData = await googleAuthHandler();
+
+    const response = await creatingUser(userData);
     if (response.status == 200) {
       setRegistered(true);
       toast.dismiss(loading);
@@ -267,7 +305,11 @@ const Register = ({ setAccessUsed, setExit, navigate }) => {
             </AnimatePresence>
           </button>
           <div className={style.othersButtonsContainer}>
-            <button>
+            <button
+              onClick={() => {
+                firebaseAuthHandler("google");
+              }}
+            >
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -315,10 +357,11 @@ const Register = ({ setAccessUsed, setExit, navigate }) => {
   );
 };
 
-const Login = ({ setAccessUsed, setExit, navigate }) => {
+const Login = ({ setAccessUsed, setExit, navigate, firebaseAuthHandler }) => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
+    authMethod: "form",
   });
   const [errors, setErrors] = useState({
     email: "",
@@ -640,7 +683,11 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
             </AnimatePresence>
           </button>
           <div className={style.othersButtonsContainer}>
-            <button>
+            <button
+              onClick={() => {
+                firebaseAuthHandler("google");
+              }}
+            >
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -688,10 +735,12 @@ const Login = ({ setAccessUsed, setExit, navigate }) => {
   );
 };
 
-const UserAccess = forwardRef(({ close, setExit, accessMethod }, ref) => {
-  const [accessUsed, setAccessUsed] = useState(accessMethod || "login");
+const UserAccess = forwardRef(({ close, setExit, formType }, ref) => {
+  const [accessUsed, setAccessUsed] = useState(formType || "login");
+
   const navigate = useNavigate();
   const width = useViewportWidth();
+
   // this detech when "Escape" key its pressed to close the form
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -705,6 +754,44 @@ const UserAccess = forwardRef(({ close, setExit, accessMethod }, ref) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  const firebaseAuthHandler = async (authMethod) => {
+    try {
+      const userData = await googleAuth();
+      const userDataFiltered = {
+        email: userData.email,
+        password: "",
+        auth: {
+          authMethod: authMethod,
+          uid: userData.uid,
+        },
+        joinedAt: getDay(),
+      };
+      const response = await thirdPartyAccess(userDataFiltered);
+
+      if (response.status == 200) {
+        toast.success(response.message, {
+          position: "bottom-right",
+        });
+
+        setTimeout(() => {
+          setExit(true);
+          setTimeout(() => {
+            window.sessionStorage.clear();
+            window.location.href = "/noteboard";
+          }, 1000);
+        }, 500);
+      }
+
+      if (response.status == 400) {
+        toast.error(response.message, {
+          position: "bottom-right",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return ReactDOM.createPortal(
     <motion.div
@@ -767,6 +854,7 @@ const UserAccess = forwardRef(({ close, setExit, accessMethod }, ref) => {
                   setAccessUsed={setAccessUsed}
                   setExit={setExit}
                   navigate={navigate}
+                  firebaseAuthHandler={firebaseAuthHandler}
                 />
               )}
             </AnimatePresence>
@@ -778,6 +866,7 @@ const UserAccess = forwardRef(({ close, setExit, accessMethod }, ref) => {
                   setAccessUsed={setAccessUsed}
                   setExit={setExit}
                   navigate={navigate}
+                  firebaseAuthHandler={firebaseAuthHandler}
                 />
               )}
             </AnimatePresence>

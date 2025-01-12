@@ -1,11 +1,11 @@
 import axios from "axios"
 import Cookies from "js-cookie"
 
-const apiURL = "http://localhost:3001/api"
-const userURL = "http://localhost:3001/user"
+// const apiURL = "http://localhost:3001/api"
+// const userURL = "http://localhost:3001/user"
 
-// const apiURL = "https://zen-api-anac.onrender.com/api"
-// const userURL = "https://zen-api-anac.onrender.com/user"
+const apiURL = "https://zen-api-anac.onrender.com/api"
+const userURL = "https://zen-api-anac.onrender.com/user"
 
 export const GET_ALL_TASKS = "GET_ALL_TASKS"
 export const GET_COMPLETED_TASKS = "GET_COMPLETED_TASKS"

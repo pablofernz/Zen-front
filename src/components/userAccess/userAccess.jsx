@@ -9,6 +9,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { square } from "ldrs";
 import { useNavigate } from "react-router-dom";
 import googleAuth from "../../auth/googleAuth";
+import githubAuth from "../../auth/githubAuth";
 
 square.register();
 
@@ -323,7 +324,11 @@ const Register = ({
               </svg>
               Google
             </button>
-            <button>
+            <button
+              onClick={() => {
+                firebaseAuthHandler("github");
+              }}
+            >
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -701,7 +706,11 @@ const Login = ({ setAccessUsed, setExit, navigate, firebaseAuthHandler }) => {
               </svg>
               Google
             </button>
-            <button>
+            <button
+              onClick={() => {
+                firebaseAuthHandler("github");
+              }}
+            >
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -757,36 +766,80 @@ const UserAccess = forwardRef(({ close, setExit, formType }, ref) => {
 
   const firebaseAuthHandler = async (authMethod) => {
     try {
-      const userData = await googleAuth();
-      const userDataFiltered = {
-        email: userData.email,
-        password: "",
-        auth: {
-          authMethod: authMethod,
-          uid: userData.uid,
-        },
-        joinedAt: getDay(),
-      };
-      const response = await thirdPartyAccess(userDataFiltered);
+      if (authMethod === "google") {
+        const userData = await googleAuth();
+        const userDataFiltered = {
+          email: userData.email,
+          password: "",
+          auth: {
+            authMethod: authMethod,
+            uid: userData.uid,
+          },
+          joinedAt: getDay(),
+        };
+        const response = await thirdPartyAccess(userDataFiltered);
 
-      if (response.status == 200) {
-        toast.success(response.message, {
-          position: "bottom-right",
-        });
+        if (response.status == 200) {
+          toast.success(response.message, {
+            position: "bottom-right",
+          });
 
-        setTimeout(() => {
-          setExit(true);
           setTimeout(() => {
-            window.sessionStorage.clear();
-            window.location.href = "/noteboard";
-          }, 1000);
-        }, 500);
+            setExit(true);
+            setTimeout(() => {
+              window.sessionStorage.clear();
+              window.location.href = "/noteboard";
+            }, 1000);
+          }, 500);
+        }
+
+        if (response.status == 400) {
+          toast.error(response.message, {
+            position: "bottom-right",
+          });
+        }
       }
 
-      if (response.status == 400) {
-        toast.error(response.message, {
-          position: "bottom-right",
-        });
+      if (authMethod === "github") {
+        const userData = await githubAuth();
+        const userDataFiltered = {
+          email: userData.email,
+          password: "",
+          auth: {
+            authMethod: authMethod,
+            uid: userData.uid,
+          },
+          joinedAt: getDay(),
+        };
+        
+        if (userData.status == 400) {
+          toast.error(userData.message, {
+            position: "bottom-right",
+          });
+          return;
+        }
+
+        const response = await thirdPartyAccess(userDataFiltered);
+
+        if (response.status == 200) {
+          toast.success(response.message, {
+            position: "bottom-right",
+          });
+
+          setTimeout(() => {
+            setExit(true);
+            setTimeout(() => {
+              window.sessionStorage.clear();
+              window.location.href = "/noteboard";
+            }, 1000);
+          }, 500);
+        }
+
+        if (response.status == 400) {
+          toast.error(response.message, {
+            position: "bottom-right",
+          });
+        }
       }
     } catch (error) {
       console.log(error);

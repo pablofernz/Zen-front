@@ -103,38 +103,6 @@ const Register = ({
       setRegistered(null);
     }
   };
-  const signUpWithGoogle = async () => {
-    const userData = await googleAuthHandler();
-
-    const response = await creatingUser(userData);
-    if (response.status == 200) {
-      setRegistered(true);
-      toast.dismiss(loading);
-      toast.success(response.message, {
-        position: "bottom-right",
-      });
-      setTimeout(() => {
-        setExit(true);
-        window.sessionStorage.clear();
-        setTimeout(() => {
-          window.location.href = "/noteboard";
-        }, 1000);
-      }, 500);
-    }
-
-    if (response.status == 400) {
-      toast.dismiss(loading);
-      toast.error(response.message, {
-        position: "bottom-right",
-        duration: 3000,
-      });
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: response.message.includes("email") && response.message,
-      }));
-      setRegistered(null);
-    }
-  };
 
   return (
     <motion.div
@@ -811,7 +779,7 @@ const UserAccess = forwardRef(({ close, setExit, formType }, ref) => {
           },
           joinedAt: getDay(),
         };
-        
+
         if (userData.status == 400) {
           toast.error(userData.message, {
             position: "bottom-right",

@@ -11,7 +11,7 @@ const githubAuth = async () => {
 
     } catch (error) {
 
-        return { success: false, status: 400, message: error.message == "Firebase: Error (auth/account-exists-with-different-credential)." ? "Email already in use with other service" : error.message }
+        return { success: false, status: 400, message: error.message == "Firebase: Error (auth/account-exists-with-different-credential)." ? "Email already in use with other service (Google)" : error.message }
     }
 }
 

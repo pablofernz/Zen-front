@@ -1,11 +1,11 @@
 import axios from "axios"
 import Cookies from "js-cookie"
 
-// const apiURL = "http://localhost:3001/api"
-// const userURL = "http://localhost:3001/user"
+const apiURL = "http://localhost:3001/api"
+const userURL = "http://localhost:3001/user"
 
-const apiURL = "https://zen-api-anac.onrender.com/api"
-const userURL = "https://zen-api-anac.onrender.com/user"
+// const apiURL = "https://zen-api-anac.onrender.com/api"
+// const userURL = "https://zen-api-anac.onrender.com/user"
 
 export const GET_ALL_TASKS = "GET_ALL_TASKS"
 export const GET_COMPLETED_TASKS = "GET_COMPLETED_TASKS"
@@ -27,6 +27,8 @@ export const thirdPartyAccess = async (body) => {
     try {
         const response = await axios.post(`${userURL}/access/thirdparty`, body)
         Cookies.set("session_token", response.data.token)
+        console.log(response.data.data)
+        window.localStorage.setItem("user_data", JSON.stringify(response.data.data))
         return response.data
 
     } catch (error) {
@@ -41,6 +43,7 @@ export const loginUser = async (body, isDemo) => {
         if (isDemo == true) {
             window.sessionStorage.setItem("session_token", response.data.token)
         } else {
+            window.localStorage.setItem("user_data", JSON.stringify(response.data.data))
             Cookies.set("session_token", response.data.token)
         }
 
@@ -54,6 +57,7 @@ export const loginUser = async (body, isDemo) => {
 export const creatingUser = async (body) => {
     try {
         const response = await axios.post(`${userURL}/create`, body)
+        window.localStorage.setItem("user_data", JSON.stringify(response.data.data))
         Cookies.set("session_token", response.data.token)
         return response.data
 

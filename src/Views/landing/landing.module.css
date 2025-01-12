@@ -3,7 +3,15 @@
     width: 100dvw;
     background-color: white;
     overflow: hidden;
-    padding: 0px 20px 20px 20px;
+    /* padding: 0px 20px 20px 20px; */
+}
+
+.logoutScreen {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    z-index: 2;
 }
 
 .landingPage>header {
@@ -12,6 +20,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0px 20px;
+}
+
+@media (max-width: 700px) {
+    .landingPage>header {
+        padding: 0px 0px 0px 10px;
+    }
 }
 
 .zenText {
@@ -48,7 +63,92 @@
     justify-content: center;
     padding-bottom: 2px;
     box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, 0.337);
+}
 
+.userContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    width: 100%;
+    gap: 5px;
+    position: relative;
+}
+
+.userButton {
+    height: 45px;
+    background-color: red;
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+    border: 2px solid black;
+    z-index: 2;
+}
+
+.userButton>img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.menuOptions {
+    position: absolute;
+    height: auto;
+    width: auto;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0.917);
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    z-index: 1;
+    box-shadow: 0px 15px 20px -10px rgba(0, 0, 0, 0.765);
+}
+
+.option {
+    width: 100%;
+    height: 45px;
+    border-radius: 10px;
+    background-color: rgb(32, 32, 32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    gap: 2px;
+    will-change: filter;
+}
+
+.option:hover {
+    filter: brightness(1.2);
+}
+
+.icon {
+    height: 40px;
+    border-radius: 10px;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+
+}
+
+.text {
+    text-wrap: nowrap;
+    height: 40px;
+    border-radius: 10px;
+    width: calc(100% - 40px);
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    font-family: Trebuchet;
+    font-weight: 900;
+    font-size: 18px;
+    color: gray;
+    padding-right: 20px;
 }
 
 .landingPage>main {
@@ -59,6 +159,8 @@
     justify-content: center;
     flex-direction: column;
     gap: 20px;
+    padding: 0px 20px 20px 20px;
+
 }
 
 .upper {
@@ -85,7 +187,7 @@
     font-size: 18px;
     font-family: Segoe UI;
     font-weight: 500;
-    color: rgb(161, 161, 161);
+    color: rgb(117, 117, 117);
     width: 55%;
     text-align: center;
     letter-spacing: 0.2px;
@@ -132,7 +234,6 @@
     padding: 5px;
     gap: 5px;
     box-shadow: 0px 10px 20px -5px rgba(0, 0, 0, 0.542);
-
 }
 
 .getStarted {
@@ -168,7 +269,7 @@
 .card {
     width: 100%;
     background-color: rgb(220, 220, 220);
-    border-radius: 20px;
+    border-radius: 30px;
     display: flex;
     align-items: center;
     justify-content: center;

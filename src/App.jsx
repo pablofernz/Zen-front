@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Home from "./Views/home/home";
-import Docs from "./Views/docs/docs";
-import Landing from "./Views/landing/landing";
-import NotFound from "./Views/404 Not Found/404";
+import { Routes, Route } from "react-router-dom";
+
+const Docs = lazy(() => import("./Views/docs/docs"));
+const Landing = lazy(() => import("./Views/landing/landing"));
+const NotFound = lazy(() => import("./Views/404 Not Found/404"));
+const Home = lazy(() => import("./Views/home/home"));
 
 function App() {
   useEffect(() => {
@@ -17,16 +18,18 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <Routes>
-        {/* in development */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/noteboard" element={<Home />} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {/* in development */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/noteboard" element={<Home />} />
 
-        {/* <Route path="/" element={<Home />} /> */}
+          {/* <Route path="/" element={<Home />} /> */}
 
-        <Route path="/docs" element={<Docs />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="/docs" element={<Docs />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }

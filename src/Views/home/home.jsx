@@ -1,12 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import style from "./home.module.css";
 import { getAllTasks } from "../../Redux/actions";
-import { useEffect, useRef, useState } from "react";
-import TaskForm from "../../components/taskForm/taskForm";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
+// import TaskForm from "../../components/taskForm/taskForm";
 import { AnimatePresence, motion } from "framer-motion";
-import TaskCard from "../../components/taskCard/taskCard";
+// import TaskCard from "../../components/taskCard/taskCard";
 import PageLoader from "../../components/pageLoader.jsx/pageLoader";
-import Search from "../../components/search/search";
+// import Search from "../../components/search/search";
+const Search = lazy(() => import("../../components/search/search"));
+const TaskCard = lazy(() => import("../../components/taskCard/taskCard"));
+const TaskForm = lazy(() => import("../../components/taskForm/taskForm"));
+
 import toast, { Toaster } from "react-hot-toast";
 import useViewportWidth from "../../Hooks/useViewportWidth";
 import Cookies from "js-cookie";
@@ -124,34 +128,40 @@ const Home = () => {
       {/* Search form Modal */}
       <AnimatePresence>
         {searchOpen && (
-          <Search
-            setSearchOpen={setSearchOpen}
-            tasks={tasks}
-            trialTasks={trialTasks}
-          />
+          <Suspense fallback={<div></div>}>
+            <Search
+              setSearchOpen={setSearchOpen}
+              tasks={tasks}
+              trialTasks={trialTasks}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Create task form Modal */}
       <AnimatePresence>
         {formOpen && (
-          <TaskForm
-            close={setFormOpen}
-            toUpdate={false}
-            setTrialTasks={setTrialTasks}
-          />
+          <Suspense fallback={<div></div>}>
+            <TaskForm
+              close={setFormOpen}
+              toUpdate={false}
+              setTrialTasks={setTrialTasks}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Update task form Modal */}
       <AnimatePresence>
         {updateTaskFormOpen && (
-          <TaskForm
-            close={setUpdateTaskFormOpen}
-            toUpdate={true}
-            taskToUpdate={updateTaskFormOpen}
-            setTrialTasks={setTrialTasks}
-          />
+          <Suspense fallback={<div></div>}>
+            <TaskForm
+              close={setUpdateTaskFormOpen}
+              toUpdate={true}
+              taskToUpdate={updateTaskFormOpen}
+              setTrialTasks={setTrialTasks}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
@@ -485,19 +495,21 @@ const Home = () => {
         >
           <AnimatePresence mode="popLayout">
             {tasksFiltered?.map((task, index) => (
-              <TaskCard
-                key={index}
-                taskData={task}
-                container={ref}
-                color={colors[index % colors.length]}
-                zIndex={upperTask}
-                setUpperTask={setUpperTask}
-                upperTask={upperTask}
-                taskStatusFiltered={taskStatus}
-                roomType={roomType}
-                setUpdateTaskFormOpen={setUpdateTaskFormOpen}
-                setTrialTasks={setTrialTasks}
-              />
+              <Suspense fallback={<div></div>}>
+                <TaskCard
+                  key={index}
+                  taskData={task}
+                  container={ref}
+                  color={colors[index % colors.length]}
+                  zIndex={upperTask}
+                  setUpperTask={setUpperTask}
+                  upperTask={upperTask}
+                  taskStatusFiltered={taskStatus}
+                  roomType={roomType}
+                  setUpdateTaskFormOpen={setUpdateTaskFormOpen}
+                  setTrialTasks={setTrialTasks}
+                />
+              </Suspense>
             ))}
           </AnimatePresence>
         </motion.div>

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import PageLoader from "../../components/pageLoader.jsx/pageLoader";
-import UserAccess from "../../components/userAccess/userAccess";
+const UserAccess = lazy(() => import("../../components/userAccess/userAccess"));
+// import UserAccess from "../../components/userAccess/userAccess";
 import style from "./landing.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import Cookies from "js-cookie";
@@ -34,12 +35,15 @@ const Landing = () => {
     <div className={style.landingPage}>
       <AnimatePresence>
         {accesModalOpen && (
-          <UserAccess
-            close={setAccesModalOpen}
-            setExit={setExit}
-            reference={accessForm}
-            formType={formType}
-          />
+          <Suspense fallback={<div></div>}>
+            <UserAccess
+              accessModalOpen={accesModalOpen}
+              close={setAccesModalOpen}
+              setExit={setExit}
+              reference={accessForm}
+              formType={formType}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 

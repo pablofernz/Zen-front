@@ -1,6 +1,6 @@
 import style from "./userAccess.module.css";
 import { AnimatePresence, motion } from "framer-motion";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import validate from "./validations";
 import useViewportWidth from "../../Hooks/useViewportWidth";
@@ -10,6 +10,7 @@ import { square } from "ldrs";
 import { useNavigate } from "react-router-dom";
 import googleAuth from "../../auth/googleAuth";
 import githubAuth from "../../auth/githubAuth";
+import useOutsideClick from "../../Hooks/clickOutside";
 
 square.register();
 
@@ -32,7 +33,7 @@ const getDay = () => {
 const Register = ({
   setAccessUsed,
   setExit,
-  navigate,
+  close,
   firebaseAuthHandler,
 }) => {
   const [registerData, setRegisterData] = useState({
@@ -116,6 +117,30 @@ const Register = ({
       <header>
         <h1>Are you new here?</h1>
         <p>Complete to create your noteboard</p>
+        {useViewportWidth() < 700 && (
+          <button
+            className={style.closeButton}
+            onClick={() => {
+              close(false);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2.5"
+              stroke="currentColor"
+              height="25"
+              width="25"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
       </header>
 
       <div>
@@ -330,7 +355,7 @@ const Register = ({
   );
 };
 
-const Login = ({ setAccessUsed, setExit, navigate, firebaseAuthHandler }) => {
+const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -497,6 +522,31 @@ const Login = ({ setAccessUsed, setExit, navigate, firebaseAuthHandler }) => {
           </button>
           <p className={style.guestAccessTooltip}>Access with a demo account</p>
         </div>
+
+        {useViewportWidth() < 700 && (
+          <button
+            className={style.closeButton}
+            onClick={() => {
+              close(false);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2.5"
+              stroke="currentColor"
+              height="25"
+              width="25"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
       </header>
 
       <div>
@@ -712,210 +762,220 @@ const Login = ({ setAccessUsed, setExit, navigate, firebaseAuthHandler }) => {
   );
 };
 
-const UserAccess = forwardRef(({ close, setExit, formType }, ref) => {
-  const [accessUsed, setAccessUsed] = useState(formType || "login");
+const UserAccess = forwardRef(
+  ({ close, setExit, formType, accessModalOpen }, ref) => {
+    const [accessUsed, setAccessUsed] = useState(formType || "login");
 
-  const navigate = useNavigate();
-  const width = useViewportWidth();
+    const navigate = useNavigate();
+    const width = useViewportWidth();
 
-  // this detech when "Escape" key its pressed to close the form
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        close(false);
+    // this detech when "Escape" key its pressed to close the form
+    useEffect(() => {
+      const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+          close(false);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }, []);
+
+    const firebaseAuthHandler = async (authMethod) => {
+      try {
+        if (authMethod === "google") {
+          const userData = await googleAuth();
+          const userDataFiltered = {
+            email: userData.email,
+            password: "",
+            auth: {
+              authMethod: authMethod,
+              uid: userData.uid,
+            },
+            joinedAt: getDay(),
+          };
+          const response = await thirdPartyAccess(userDataFiltered);
+
+          if (response.status == 200) {
+            toast.success(response.message, {
+              position: "bottom-right",
+            });
+
+            setTimeout(() => {
+              setExit(true);
+              setTimeout(() => {
+                window.sessionStorage.clear();
+                window.location.href = "/noteboard";
+              }, 1000);
+            }, 500);
+          }
+
+          if (response.status == 400) {
+            toast.error(response.message, {
+              position: "bottom-right",
+            });
+          }
+        }
+
+        if (authMethod === "github") {
+          const userData = await githubAuth();
+          const userDataFiltered = {
+            email: userData.email,
+            password: "",
+            auth: {
+              authMethod: authMethod,
+              uid: userData.uid,
+            },
+            joinedAt: getDay(),
+          };
+
+          if (userData.status == 400) {
+            toast.error(userData.message, {
+              position: "bottom-right",
+            });
+            return;
+          }
+
+          const response = await thirdPartyAccess(userDataFiltered);
+
+          if (response.status == 200) {
+            toast.success(response.message, {
+              position: "bottom-right",
+            });
+
+            setTimeout(() => {
+              setExit(true);
+              setTimeout(() => {
+                window.sessionStorage.clear();
+                window.location.href = "/noteboard";
+              }, 1000);
+            }, 500);
+          }
+
+          if (response.status == 400) {
+            toast.error(response.message, {
+              position: "bottom-right",
+            });
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
+    const accessModal = useRef(null);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+    useOutsideClick(accessModal, () => {
+      if (accessModalOpen) close(false);
+    });
 
-  const firebaseAuthHandler = async (authMethod) => {
-    try {
-      if (authMethod === "google") {
-        const userData = await googleAuth();
-        const userDataFiltered = {
-          email: userData.email,
-          password: "",
-          auth: {
-            authMethod: authMethod,
-            uid: userData.uid,
-          },
-          joinedAt: getDay(),
-        };
-        const response = await thirdPartyAccess(userDataFiltered);
-
-        if (response.status == 200) {
-          toast.success(response.message, {
-            position: "bottom-right",
-          });
-
-          setTimeout(() => {
-            setExit(true);
-            setTimeout(() => {
-              window.sessionStorage.clear();
-              window.location.href = "/noteboard";
-            }, 1000);
-          }, 500);
-        }
-
-        if (response.status == 400) {
-          toast.error(response.message, {
-            position: "bottom-right",
-          });
-        }
-      }
-
-      if (authMethod === "github") {
-        const userData = await githubAuth();
-        const userDataFiltered = {
-          email: userData.email,
-          password: "",
-          auth: {
-            authMethod: authMethod,
-            uid: userData.uid,
-          },
-          joinedAt: getDay(),
-        };
-
-        if (userData.status == 400) {
-          toast.error(userData.message, {
-            position: "bottom-right",
-          });
-          return;
-        }
-
-        const response = await thirdPartyAccess(userDataFiltered);
-
-        if (response.status == 200) {
-          toast.success(response.message, {
-            position: "bottom-right",
-          });
-
-          setTimeout(() => {
-            setExit(true);
-            setTimeout(() => {
-              window.sessionStorage.clear();
-              window.location.href = "/noteboard";
-            }, 1000);
-          }, 500);
-        }
-
-        if (response.status == 400) {
-          toast.error(response.message, {
-            position: "bottom-right",
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  return ReactDOM.createPortal(
-    <motion.div
-      initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-      animate={{
-        opacity: 1,
-        backdropFilter: "blur(5px)",
-        transition: { duration: 0.5 },
-      }}
-      exit={{
-        opacity: 0,
-        backdropFilter: "blur(0px)",
-        transition: { delay: 0.5 },
-      }}
-      className={style.component}
-    >
-      <div className={style.background} />
-      <Toaster
-        toastOptions={{
-          className: "",
-          style: {
-            height: "50px",
-            backgroundColor: "rgb(20,20,20)",
-            fontFamily: "Trebuchet",
-            fontWeight: "900",
-            letterSpacing: "1px",
-            color: "gray",
-            borderRadius: "15px",
-          },
-        }}
-      />
+    return ReactDOM.createPortal(
       <motion.div
-        initial={{
-          y: "100dvh",
-          scale: 0.5,
-        }}
+        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
         animate={{
-          y: "0dvh",
-          scale: 1,
+          opacity: 1,
+          backdropFilter: "blur(5px)",
+          transition: { duration: 0.5 },
         }}
-        exit={{ y: "100dvh", scale: 0 }}
-        transition={{ ease: "anticipate", duration: 1 }}
-        className={style.card}
+        exit={{
+          opacity: 0,
+          backdropFilter: "blur(0px)",
+          transition: { delay: 0.5 },
+        }}
+        className={style.component}
       >
-        <motion.div
-          animate={{
-            x:
-              width < 700 && accessUsed == "login"
-                ? "0%"
-                : width < 700 && accessUsed == "register"
-                ? "-100%"
-                : width > 700 && "0%",
+        <div className={style.background} />
+        <Toaster
+          toastOptions={{
+            className: "",
+            style: {
+              height: "50px",
+              backgroundColor: "rgb(20,20,20)",
+              fontFamily: "Trebuchet",
+              fontWeight: "900",
+              letterSpacing: "1px",
+              color: "gray",
+              borderRadius: "15px",
+            },
           }}
+        />
+        <motion.div
+          initial={{
+            y: "100dvh",
+            scale: 0.5,
+          }}
+          animate={{
+            y: "0dvh",
+            scale: 1,
+          }}
+          exit={{ y: "100dvh", scale: 0 }}
           transition={{ ease: "anticipate", duration: 1 }}
+          className={style.card}
+          ref={accessModal}
         >
-          <div className={style.rightSide}>
-            <AnimatePresence>
-              {accessUsed == "login" && (
-                <Login
-                  setAccessUsed={setAccessUsed}
-                  setExit={setExit}
-                  navigate={navigate}
-                  firebaseAuthHandler={firebaseAuthHandler}
-                />
-              )}
-            </AnimatePresence>
-          </div>
-          <div className={style.leftSide}>
-            <AnimatePresence>
-              {accessUsed == "register" && (
-                <Register
-                  setAccessUsed={setAccessUsed}
-                  setExit={setExit}
-                  navigate={navigate}
-                  firebaseAuthHandler={firebaseAuthHandler}
-                />
-              )}
-            </AnimatePresence>
-          </div>
+          <motion.div
+            animate={{
+              x:
+                width < 700 && accessUsed == "login"
+                  ? "0%"
+                  : width < 700 && accessUsed == "register"
+                  ? "-100%"
+                  : width > 700 && "0%",
+            }}
+            transition={{ ease: "anticipate", duration: 1 }}
+          >
+            <div className={style.rightSide}>
+              <AnimatePresence>
+                {accessUsed == "login" && (
+                  <Login
+                    setAccessUsed={setAccessUsed}
+                    setExit={setExit}
+                    navigate={navigate}
+                    firebaseAuthHandler={firebaseAuthHandler}
+                    close={close}
+                  />
+                )}
+              </AnimatePresence>
+            </div>
+            <div className={style.leftSide}>
+              <AnimatePresence>
+                {accessUsed == "register" && (
+                  <Register
+                    setAccessUsed={setAccessUsed}
+                    setExit={setExit}
+                    navigate={navigate}
+                    firebaseAuthHandler={firebaseAuthHandler}
+                    close={close}
+                  />
+                )}
+              </AnimatePresence>
+            </div>
 
-          {width > 700 && (
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{
-                x: accessUsed == "login" ? "100%" : "0%",
-              }}
-              transition={{ ease: "anticipate", duration: 1 }}
-              className={style.imageSlider}
-            >
-              <img
-                src="https://res.cloudinary.com/dnrprmypf/image/upload/v1735865026/Projects%20Images/Zen/Utils/8c98a1c3-0031-45c8-aae5-e503fe55e2bd.png"
-                alt=""
-              />
-              <div className={style.icon}>
-                <p>zen</p>
-              </div>
-            </motion.div>
-          )}
+            {width > 700 && (
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{
+                  x: accessUsed == "login" ? "100%" : "0%",
+                }}
+                transition={{ ease: "anticipate", duration: 1 }}
+                className={style.imageSlider}
+              >
+                <img
+                  src="https://res.cloudinary.com/dnrprmypf/image/upload/v1735865026/Projects%20Images/Zen/Utils/8c98a1c3-0031-45c8-aae5-e503fe55e2bd.webp"
+                  alt=""
+                />
+                <div className={style.icon}>
+                  <p>zen</p>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </motion.div>,
-    document.getElementById("userAccess")
-  );
-});
+      </motion.div>,
+      document.getElementById("userAccess")
+    );
+  }
+);
 
 export default UserAccess;

@@ -5,6 +5,7 @@ const UserAccess = lazy(() => import("../../components/userAccess/userAccess"));
 import style from "./landing.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import Cookies from "js-cookie";
+import useViewportWidth from "../../Hooks/useViewportWidth";
 
 const Landing = () => {
   const [accesModalOpen, setAccesModalOpen] = useState(
@@ -53,17 +54,7 @@ const Landing = () => {
       <header>
         <p className={style.zenText}>zen</p>
         <div className={style.headerButtonsContainer}>
-          {!isLogged ? (
-            <button
-              className={style.signUp}
-              onClick={() => {
-                setFormType("register");
-                setAccesModalOpen(true);
-              }}
-            >
-              Sign up
-            </button>
-          ) : (
+          {isLogged && (
             <div className={style.userContainer}>
               <button
                 className={style.userButton}
@@ -205,21 +196,86 @@ const Landing = () => {
 
       <main>
         <div className={style.upper}>
-          <h1>Focus. Organize. Achieve</h1>
+          <h1>
+            {useViewportWidth() > 700
+              ? "Focus. Organize. Achieve"
+              : "Focus Organize Achieve"}
+          </h1>
           <h2>
             Zen helps you organize your day with ease: create tasks, focus on
             priorities, and track your progress, all in a clean and minimalist
             interface.
           </h2>
         </div>
-        <div className={style.bottom}>
-          <div className={style.cardSpace}>
-            <div className={style.card} style={{ height: "100%" }}></div>
+        {useViewportWidth() > 700 ? (
+          <div className={style.bottom}>
+            <div className={style.cardSpace}>
+              <div className={style.card} style={{ height: "100%" }}></div>
+            </div>
+            <div className={style.cardSpace}>
+              <div className={style.card} style={{ height: "75%" }}></div>
+            </div>
+
+            <div className={style.cardSpace2}>
+              {isLogged ? (
+                <div className={style.buttonsContainer}>
+                  <button
+                    className={style.getStarted}
+                    onClick={() => {
+                      setExit(true);
+                      setTimeout(() => {
+                        window.location.pathname = "/noteboard";
+                      }, 1000);
+                    }}
+                  >
+                    My Noteboard
+                  </button>
+                  <button
+                    className={style.alternativeButton}
+                    onClick={() => {
+                      Cookies.remove("session_token");
+                      window.localStorage.removeItem("user_data");
+                      setIsLogged(false);
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className={style.buttonsContainer}>
+                  <button
+                    className={style.getStarted}
+                    onClick={() => {
+                      setAccesModalOpen(true);
+                      setFormType("login");
+                    }}
+                  >
+                    Get started
+                  </button>
+                  <button
+                    className={style.alternativeButton}
+                    onClick={tryHandler}
+                  >
+                    Try it now
+                  </button>
+                </div>
+              )}
+
+              <div
+                className={style.card}
+                style={{ height: "50%", backgroundColor: "rgb(222, 222, 222)" }}
+              ></div>
+            </div>
+
+            <div className={style.cardSpace}>
+              <div className={style.card} style={{ height: "75%" }}></div>
+            </div>
+            <div className={style.cardSpace}>
+              <div className={style.card} style={{ height: "100%" }}></div>
+            </div>
           </div>
-          <div className={style.cardSpace}>
-            <div className={style.card} style={{ height: "75%" }}></div>
-          </div>
-          <div className={style.cardSpace2}>
+        ) : (
+          <div className={style.bottom}>
             {isLogged ? (
               <div className={style.buttonsContainer}>
                 <button
@@ -263,19 +319,8 @@ const Landing = () => {
                 </button>
               </div>
             )}
-
-            <div
-              className={style.card}
-              style={{ height: "50%", backgroundColor: "rgb(222, 222, 222)" }}
-            ></div>
           </div>
-          <div className={style.cardSpace}>
-            <div className={style.card} style={{ height: "75%" }}></div>
-          </div>
-          <div className={style.cardSpace}>
-            <div className={style.card} style={{ height: "100%" }}></div>
-          </div>
-        </div>
+        )}
       </main>
     </div>
   );

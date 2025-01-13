@@ -29,8 +29,7 @@
 }
 
 html {
-    scrollbar-gutter: stable;
-
+    scrollbar-gutter: stable; /* Opcionalmente, asegura un comportamiento consistente */
 }
 
 body {

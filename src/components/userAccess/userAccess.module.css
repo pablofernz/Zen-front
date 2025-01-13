@@ -108,6 +108,7 @@
     justify-content: center;
     color: gray;
 }
+
 .card>div {
     height: 100%;
     width: 100%;
@@ -523,9 +524,11 @@
         scale: 0.9;
         color: rgb(58, 58, 58);
     }
+
     .closeButton {
         scale: 0.9;
         color: rgb(58, 58, 58);
+        margin: 0px;background-color: transparent;
     }
 
     .leftSide {

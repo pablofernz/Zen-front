@@ -677,6 +677,7 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
                   initial={{ opacity: 0, y: 20 }}
                   exit={{ opacity: 0, y: 0 }}
                   animate={{ opacity: 1, y: 0 }}
+                  style={{marginTop: "2px"}}
                   transition={{ ease: "anticipate", duration: 0.5 }}
                 >
                   <l-square

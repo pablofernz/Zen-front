@@ -28,9 +28,7 @@
     /* Indica que tu sitio está diseñado solo para modo claro */
 }
 
-html {
-    scrollbar-gutter: stable; /* Opcionalmente, asegura un comportamiento consistente */
-}
+
 
 body {
     overflow-y: auto;

@@ -68,7 +68,6 @@
     justify-content: center;
     color: gray;
     border: 1px solid rgb(24, 24, 24)
-
 }
 
 .headerIcon {
@@ -429,16 +428,14 @@
     display: grid;
     justify-content: center;
     align-items: start;
-    grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+    grid-template-columns: repeat(auto-fit, minmax(300px, auto)); /* 1fr asegura un ancho flexible */
     width: calc(100% - 200px);
-    height: auto;
-    min-height: calc(100dvh - 130px);
-    gap: 30px;
-    row-gap: 40px;
+    min-height: auto; /* Altura mínima */
+    row-gap: 30px;
+    column-gap: 30px;
     flex-basis: calc(100% - 20px);
     position: relative;
-    flex-wrap: wrap;
-}
+  }
 
 @media (max-width: 650px) {
 

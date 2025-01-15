@@ -127,7 +127,8 @@ const TaskCard = forwardRef(
         className={style.taskCard}
         //both of this funcionts manage the cursor pointer
         whileTap={{
-          cursor: roomType == "normal" || isPinned ? "default" : "grabbing",
+          cursor:
+            roomType == "normal" || isPinned == true ? "default" : "grabbing",
         }}
         whileHover={{
           cursor: roomType == "normal" || isPinned ? "default" : "grab",

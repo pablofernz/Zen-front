@@ -181,7 +181,7 @@ const Home = () => {
           >
             <motion.div
               initial={{ scale: 1 }}
-              exit={{ scale: 0, rotate: -22.5 }}
+              exit={{ scale: 0 }}
               animate={{ scale: 1, transition: { delay: 0.5 } }}
               transition={{ ease: "anticipate", duration: 1 }}
               className={style.modalCard}
@@ -274,38 +274,40 @@ const Home = () => {
               }}
             >
               <p>zen</p>
-              <div className={style.roomTypeContainer}>
-                <div
-                  onClick={() => {
-                    setRoomType("normal");
-                  }}
-                >
-                  {roomType == "normal" && (
-                    <motion.div
-                      layoutId="roomButton"
-                      transition={{
-                        ease: viewportWidth > 900 && "anticipate",
-                        duration: viewportWidth > 900 && 1,
-                      }}
-                      style={{ borderRadius: "7px" }}
-                    ></motion.div>
-                  )}
-                  <p>OFF</p>
+              {tasksFiltered?.length > 0 && (
+                <div className={style.roomTypeContainer}>
+                  <div
+                    onClick={() => {
+                      setRoomType("normal");
+                    }}
+                  >
+                    {roomType == "normal" && (
+                      <motion.div
+                        layoutId="roomButton"
+                        transition={{
+                          ease: viewportWidth > 900 && "anticipate",
+                          duration: viewportWidth > 900 && 1,
+                        }}
+                        style={{ borderRadius: "7px" }}
+                      ></motion.div>
+                    )}
+                    <p>OFF</p>
+                  </div>
+                  <div>
+                    {roomType == "zen" && (
+                      <motion.div
+                        layoutId="roomButton"
+                        transition={{
+                          ease: viewportWidth > 600 && "anticipate",
+                          duration: viewportWidth > 600 && 1,
+                        }}
+                        style={{ borderRadius: "7px" }}
+                      ></motion.div>
+                    )}
+                    <p>ON</p>
+                  </div>
                 </div>
-                <div>
-                  {roomType == "zen" && (
-                    <motion.div
-                      layoutId="roomButton"
-                      transition={{
-                        ease: viewportWidth > 600 && "anticipate",
-                        duration: viewportWidth > 600 && 1,
-                      }}
-                      style={{ borderRadius: "7px" }}
-                    ></motion.div>
-                  )}
-                  <p>ON</p>
-                </div>
-              </div>
+              )}
             </div>
           ) : (
             <p className={style.zenText}>zen</p>
@@ -372,7 +374,7 @@ const Home = () => {
           </motion.div>
         </motion.div>
         <div className={style.rightSide}>
-          <div className={style.buttonsContainer}>
+         {tasksFiltered?.length > 0 &&  <div className={style.buttonsContainer}>
             <button
               onClick={() => {
                 setTaskStatus("all");
@@ -429,7 +431,7 @@ const Home = () => {
                 )}
               <p>Pending</p>
             </button>
-          </div>
+          </div>}
         </div>
       </header>
 

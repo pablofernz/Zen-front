@@ -30,12 +30,7 @@ const getDay = () => {
   return createdAt;
 };
 
-const Register = ({
-  setAccessUsed,
-  setExit,
-  close,
-  firebaseAuthHandler,
-}) => {
+const Register = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
   const [registerData, setRegisterData] = useState({
     email: "",
     password: "",
@@ -279,7 +274,7 @@ const Register = ({
                     bg-opacity="0.1"
                     speed="2"
                     color="rgb(169, 169, 169)"
-                    style={{ marginTop: "-1px" }}
+                    style={{ marginTop: "5px" }}
                     transition={{ ease: "anticipate", duration: 0.5 }}
                   />
                 </motion.div>
@@ -301,7 +296,7 @@ const Register = ({
           <div className={style.othersButtonsContainer}>
             <button
               onClick={() => {
-                firebaseAuthHandler("google");
+                firebaseAuthHandler("google", setLogged);
               }}
             >
               <svg
@@ -319,7 +314,7 @@ const Register = ({
             </button>
             <button
               onClick={() => {
-                firebaseAuthHandler("github");
+                firebaseAuthHandler("github", setLogged);
               }}
             >
               <svg
@@ -390,10 +385,13 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
       return;
     }
     setLogged(false);
-
+    const loading = toast.loading("Loggin...", {
+      position: "bottom-right",
+    });
     const response = await loginUser(loginData, false);
 
     if (response.status == 200) {
+      toast.dismiss(loading);
       setLogged(true);
       toast.success(response.message, {
         position: "bottom-right",
@@ -409,6 +407,8 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
     }
 
     if (response.status == 404) {
+      toast.dismiss(loading);
+
       toast.error(response.message, {
         position: "bottom-right",
       });
@@ -420,6 +420,8 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
       setLogged(null);
     }
     if (response.status == 401) {
+      toast.dismiss(loading);
+
       toast.error(response.message, {
         position: "bottom-right",
       });
@@ -646,8 +648,9 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
             className={`${style.label} ${errors.password && style.labelError}`}
           >
             <p>{errors.password || "Password"}</p>
-            <button style={{ color: "rgb(59, 59, 59)" }}>I forgot it</button>
+            {/* <button style={{ color: "rgb(59, 59, 59)" }}>I forgot it</button> */}
           </label>
+          
         </div>
         <div className={style.buttonsContainer}>
           <button
@@ -677,7 +680,7 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
                   initial={{ opacity: 0, y: 20 }}
                   exit={{ opacity: 0, y: 0 }}
                   animate={{ opacity: 1, y: 0 }}
-                  style={{marginTop: "2px"}}
+                  style={{ marginTop: "2px" }}
                   transition={{ ease: "anticipate", duration: 0.5 }}
                 >
                   <l-square
@@ -686,7 +689,7 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
                     stroke-length="0.25"
                     bg-opacity="0.1"
                     speed="2"
-                    style={{ marginTop: "-1px" }}
+                    style={{ marginTop: "2px" }}
                     color="rgb(169, 169, 169)"
                     transition={{ ease: "anticipate", duration: 0.5 }}
                   />
@@ -709,7 +712,7 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
           <div className={style.othersButtonsContainer}>
             <button
               onClick={() => {
-                firebaseAuthHandler("google");
+                firebaseAuthHandler("google", setLogged);
               }}
             >
               <svg
@@ -727,7 +730,7 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
             </button>
             <button
               onClick={() => {
-                firebaseAuthHandler("github");
+                firebaseAuthHandler("github", setLogged);
               }}
             >
               <svg
@@ -784,7 +787,7 @@ const UserAccess = forwardRef(
       };
     }, []);
 
-    const firebaseAuthHandler = async (authMethod) => {
+    const firebaseAuthHandler = async (authMethod, setLogged) => {
       try {
         if (authMethod === "google") {
           const userData = await googleAuth();
@@ -797,12 +800,18 @@ const UserAccess = forwardRef(
             },
             joinedAt: getDay(),
           };
+          setLogged(false);
+          const loading = toast.loading("Loggin...", {
+            position: "bottom-right",
+          });
           const response = await thirdPartyAccess(userDataFiltered);
 
           if (response.status == 200) {
+            toast.dismiss(loading);
             toast.success(response.message, {
               position: "bottom-right",
             });
+            setLogged(true);
 
             setTimeout(() => {
               setExit(true);
@@ -814,9 +823,11 @@ const UserAccess = forwardRef(
           }
 
           if (response.status == 400) {
+            toast.dismiss(loading);
             toast.error(response.message, {
               position: "bottom-right",
             });
+            setLogged(null);
           }
         }
 

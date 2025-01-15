@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Cookies from "js-cookie";
 import useViewportWidth from "../../Hooks/useViewportWidth";
 
-const generateCard = (color, left, top) => {
+const Card = ({ color, left, top }) => {
   return (
     <motion.div
       whileTap={{
@@ -118,31 +118,9 @@ const Landing = () => {
     "rgb(255, 211, 192)",
     "rgb(190, 148, 242)",
     "rgb(208, 238, 255)",
+    "rgb(228, 255, 208)",
   ];
 
-  const generateSquare = (color, left, top) => {
-    return (
-      <motion.div
-        whileTap={{
-          cursor: "grabbing",
-        }}
-        whileHover={{
-          cursor: "grab",
-        }}
-        drag
-        dragTransition={{ bounceStiffness: 500, bounceDamping: 20, power: 1 }}
-        dragElastic={0.2}
-        style={{
-          backgroundColor: { color },
-          height: "100px",
-          width: "100px",
-          borderRadius: "2px",
-        }}
-        initial={{ top: top, left: left }}
-        // animate={{ top: top, left: left }}
-      ></motion.div>
-    );
-  };
   return (
     <div className={style.landingPage}>
       <AnimatePresence>
@@ -353,24 +331,37 @@ const Landing = () => {
           )}
         </div>
         <div className={style.tasksContainer}>
-          {useViewportWidth() > 700
-            ? generateCard(colors[1], "95%", "10%")
-            : generateCard(colors[1], "95%", "15%")}
-          {useViewportWidth() > 700
-            ? generateCard(colors[3], "5%", "-80px")
-            : generateCard(colors[3], "-30%", "-20px")}
-          {generateCard(colors[5], "30%", "80%")}
-          {useViewportWidth() > 700
-            ? generateCard(colors[0], "70%", "65%")
-            : generateCard(colors[0], "-30%", "90%")}
-          {useViewportWidth() > 700 && generateCard(colors[6], "-5%", "85%")}
-          {useViewportWidth() > 700 && generateCard(colors[8], "50%", "-100px")}
-          {generateCard(colors[9], "90%", "95%")}
-          {/* {generateSquare(colors[9], "30%", "5%")} */}
-          {/* 
-          {generateCard(colors[5])}
-          {generateCard(colors[0])}
-          {generateCard(colors[6])} */}
+          {useViewportWidth() > 700 ? (
+            <Card color={colors[1]} left="95%" top="10%" />
+          ) : (
+            <Card color={colors[1]} left="95%" top="15%" />
+          )}
+
+          {useViewportWidth() > 700 ? (
+            <Card color={colors[3]} left="5%" top="-18%" />
+          ) : (
+            <Card color={colors[3]} left="-30%" top="-20px" />
+          )}
+
+          {<Card color={colors[5]} left="30%" top="80%" />}
+
+          {useViewportWidth() > 700 ? (
+            <Card color={colors[0]} left="70%" top="65%" />
+          ) : (
+            <Card color={colors[0]} left="-30%" top="90%" />
+          )}
+
+          {useViewportWidth() > 700 && (
+            <Card color={colors[6]} left="-5%" top="85%" />
+          )}
+          {useViewportWidth() > 700 && (
+            <Card color={colors[8]} left="50%" top="-100px" />
+          )}
+          {useViewportWidth() > 700 && (
+            <Card color={colors[12]} left="-10%" top="30%" />
+          )}
+
+          {<Card color={colors[9]} left="90%" top="95%" />}
         </div>
       </main>
     </div>

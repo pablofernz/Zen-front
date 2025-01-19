@@ -113,6 +113,7 @@ const Home = () => {
       {/* initial pageloader */}
       <PageLoader option="show" />
       {exit && <PageLoader option="hidden" />}
+
       <Toaster
         toastOptions={{
           className: "",
@@ -126,6 +127,7 @@ const Home = () => {
           },
         }}
       />
+
       {/* Search form Modal */}
       <AnimatePresence>
         {searchOpen && (
@@ -267,52 +269,83 @@ const Home = () => {
       <header>
         <div className={style.leftSide}>
           {viewportWidth > 900 ? (
-            <div
-              className={style.zenButton}
-              onClick={() => {
-                setRoomType(roomType == "normal" ? "zen" : "normal");
-              }}
-            >
+            // <div
+            //   className={style.zenButton}
+            //   onClick={() => {
+            //     setRoomType(roomType == "normal" ? "zen" : "normal");
+            //   }}
+            // >
+            //   <p>zen</p>
+            //   {tasksFiltered?.length > 0 && (
+            //     <div className={style.roomTypeContainer}>
+            //       <div
+            //         onClick={() => {
+            //           setRoomType("normal");
+            //         }}
+            //       >
+            //         {roomType == "normal" && (
+            //           <motion.div
+            //             layoutId="roomButton"
+            //             transition={{
+            //               ease: viewportWidth > 900 && "anticipate",
+            //               duration: viewportWidth > 900 && 1,
+            //             }}
+            //             style={{ borderRadius: "7px" }}
+            //           ></motion.div>
+            //         )}
+            //         <p>OFF</p>
+            //       </div>
+            //       <div>
+            //         {roomType == "zen" && (
+            //           <motion.div
+            //             layoutId="roomButton"
+            //             transition={{
+            //               ease: viewportWidth > 600 && "anticipate",
+            //               duration: viewportWidth > 600 && 1,
+            //             }}
+            //             style={{ borderRadius: "7px" }}
+            //           ></motion.div>
+            //         )}
+            //         <p>ON</p>
+            //       </div>
+            //     </div>
+            //   )}
+            // </div>
+            <div className={style.zenButtonAux}>
               <p>zen</p>
-              {tasksFiltered?.length > 0 && (
-                <div className={style.roomTypeContainer}>
-                  <div
-                    onClick={() => {
-                      setRoomType("normal");
-                    }}
-                  >
-                    {roomType == "normal" && (
-                      <motion.div
-                        layoutId="roomButton"
-                        transition={{
-                          ease: viewportWidth > 900 && "anticipate",
-                          duration: viewportWidth > 900 && 1,
-                        }}
-                        style={{ borderRadius: "7px" }}
-                      ></motion.div>
-                    )}
-                    <p>OFF</p>
-                  </div>
-                  <div>
-                    {roomType == "zen" && (
-                      <motion.div
-                        layoutId="roomButton"
-                        transition={{
-                          ease: viewportWidth > 600 && "anticipate",
-                          duration: viewportWidth > 600 && 1,
-                        }}
-                        style={{ borderRadius: "7px" }}
-                      ></motion.div>
-                    )}
-                    <p>ON</p>
-                  </div>
-                </div>
-              )}
             </div>
           ) : (
             <p className={style.zenText}>zen</p>
           )}
         </div>
+
+        {viewportWidth < 900 && (
+          <button
+            className={style.backButton}
+            onClick={() => {
+              setExit(true);
+              setTimeout(() => {
+                window.location.pathname = "/";
+              }, 1000);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              height="25"
+              width="25"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+              />
+            </svg>
+          </button>
+        )}
 
         <motion.div layout className={style.center}>
           <motion.div
@@ -374,14 +407,33 @@ const Home = () => {
           </motion.div>
         </motion.div>
         <div className={style.rightSide}>
-         {tasksFiltered?.length > 0 &&  <div className={style.buttonsContainer}>
-            <button
-              onClick={() => {
-                setTaskStatus("all");
-              }}
-            >
-              {taskStatus === "all" &&
-                (taskStatus !== true || taskStatus !== false) && (
+          {tasksFiltered?.length > 0 && (
+            <div className={style.buttonsContainer}>
+              <button
+                onClick={() => {
+                  setTaskStatus("all");
+                }}
+              >
+                {taskStatus === "all" &&
+                  (taskStatus !== true || taskStatus !== false) && (
+                    <motion.div
+                      layoutId="backgroundButton"
+                      className={style.buttonBackground}
+                      transition={{
+                        ease: "anticipate",
+                        duration: viewportWidth > 700 ? 1 : 0.5,
+                      }}
+                      style={{ borderRadius: "10px" }}
+                    ></motion.div>
+                  )}
+                <p>All</p>
+              </button>
+              <button
+                onClick={() => {
+                  setTaskStatus(true);
+                }}
+              >
+                {taskStatus === true && (
                   <motion.div
                     layoutId="backgroundButton"
                     className={style.buttonBackground}
@@ -392,46 +444,29 @@ const Home = () => {
                     style={{ borderRadius: "10px" }}
                   ></motion.div>
                 )}
-              <p>All</p>
-            </button>
-            <button
-              onClick={() => {
-                setTaskStatus(true);
-              }}
-            >
-              {taskStatus === true && (
-                <motion.div
-                  layoutId="backgroundButton"
-                  className={style.buttonBackground}
-                  transition={{
-                    ease: "anticipate",
-                    duration: viewportWidth > 700 ? 1 : 0.5,
-                  }}
-                  style={{ borderRadius: "10px" }}
-                ></motion.div>
-              )}
-              <p>Completed</p>
-            </button>
-            <button
-              onClick={() => {
-                setTaskStatus(false);
-              }}
-            >
-              {taskStatus === false &&
-                (taskStatus !== true || taskStatus !== "all") && (
-                  <motion.div
-                    layoutId="backgroundButton"
-                    className={style.buttonBackground}
-                    transition={{
-                      ease: "anticipate",
-                      duration: viewportWidth > 700 ? 1 : 0.5,
-                    }}
-                    style={{ borderRadius: "10px" }}
-                  ></motion.div>
-                )}
-              <p>Pending</p>
-            </button>
-          </div>}
+                <p>Completed</p>
+              </button>
+              <button
+                onClick={() => {
+                  setTaskStatus(false);
+                }}
+              >
+                {taskStatus === false &&
+                  (taskStatus !== true || taskStatus !== "all") && (
+                    <motion.div
+                      layoutId="backgroundButton"
+                      className={style.buttonBackground}
+                      transition={{
+                        ease: "anticipate",
+                        duration: viewportWidth > 700 ? 1 : 0.5,
+                      }}
+                      style={{ borderRadius: "10px" }}
+                    ></motion.div>
+                  )}
+                <p>Pending</p>
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
@@ -499,19 +534,20 @@ const Home = () => {
           <AnimatePresence mode="popLayout">
             {tasksFiltered?.map((task, index) => (
               <Suspense fallback={<div></div>}>
-                <TaskCard
-                  key={index}
-                  taskData={task}
-                  container={ref}
-                  color={colors[index % colors.length]}
-                  zIndex={upperTask}
-                  setUpperTask={setUpperTask}
-                  upperTask={upperTask}
-                  taskStatusFiltered={taskStatus}
-                  roomType={roomType}
-                  setUpdateTaskFormOpen={setUpdateTaskFormOpen}
-                  setTrialTasks={setTrialTasks}
-                />
+                <div key={index}>
+                  <TaskCard
+                    taskData={task}
+                    container={ref}
+                    color={colors[index % colors.length]}
+                    zIndex={upperTask}
+                    setUpperTask={setUpperTask}
+                    upperTask={upperTask}
+                    taskStatusFiltered={taskStatus}
+                    roomType={roomType}
+                    setUpdateTaskFormOpen={setUpdateTaskFormOpen}
+                    setTrialTasks={setTrialTasks}
+                  />
+                </div>
               </Suspense>
             ))}
           </AnimatePresence>

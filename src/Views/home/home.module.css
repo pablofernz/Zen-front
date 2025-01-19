@@ -148,6 +148,21 @@
     align-items: center;
     justify-content: start;
     padding-left: 20px;
+    position: relative;
+}
+
+.backButton {
+    height: 40px;
+    aspect-ratio: 1/1;
+    border-radius: 999px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0, 0, 0);
 }
 
 .zenButton {
@@ -169,13 +184,23 @@
     justify-content: center;
 }
 
-.zenButton>p {
-    font-size: 50px;
+.zenButtonAux>p {
+    font-size: 40px;
     font-family: Trebuchet;
     font-weight: 900;
     color: black;
-    height: 85%;
+    height: 100%;
+    margin-top: -20px;
 }
+
+.zenButtonAux {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+}
+
 
 .roomTypeContainer {
     height: 50px;
@@ -428,14 +453,16 @@
     display: grid;
     justify-content: center;
     align-items: start;
-    grid-template-columns: repeat(auto-fit, minmax(300px, auto)); /* 1fr asegura un ancho flexible */
+    grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+    /* 1fr asegura un ancho flexible */
     width: calc(100% - 200px);
-    min-height: auto; /* Altura mínima */
+    min-height: auto;
+    /* Altura mínima */
     row-gap: 30px;
     column-gap: 30px;
     flex-basis: calc(100% - 20px);
     position: relative;
-  }
+}
 
 @media (max-width: 650px) {
 

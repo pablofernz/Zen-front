@@ -10,7 +10,15 @@ const googleAuth = async () => {
         return credentials.user
 
     } catch (error) {
-        return { success: false, status: 400, message: error.message == "Firebase: Error (auth/account-exists-with-different-credential)." ? "Email already in use with other service (GitHub)" : error.message }
+        if (error.code === "auth/popup-closed-by-user" || error.code === "auth/cancelled-popup-request") {
+            return { success: false, status: 400, message: "Auth popup closed" }
+        }
+
+        if (error.code === "auth/account-exists-with-different-credential") {
+            return { success: false, status: 400, message: "Email already in use with other service (Google)" }
+        }
+
+        return { success: false, status: 400, message: error.message }
     }
 }
 

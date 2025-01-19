@@ -650,7 +650,6 @@ const Login = ({ setAccessUsed, setExit, close, firebaseAuthHandler }) => {
             <p>{errors.password || "Password"}</p>
             {/* <button style={{ color: "rgb(59, 59, 59)" }}>I forgot it</button> */}
           </label>
-          
         </div>
         <div className={style.buttonsContainer}>
           <button
@@ -804,30 +803,41 @@ const UserAccess = forwardRef(
           const loading = toast.loading("Loggin...", {
             position: "bottom-right",
           });
-          const response = await thirdPartyAccess(userDataFiltered);
+          console.log(userData);
 
-          if (response.status == 200) {
-            toast.dismiss(loading);
-            toast.success(response.message, {
-              position: "bottom-right",
-            });
-            setLogged(true);
-
-            setTimeout(() => {
-              setExit(true);
-              setTimeout(() => {
-                window.sessionStorage.clear();
-                window.location.href = "/noteboard";
-              }, 1000);
-            }, 500);
-          }
-
-          if (response.status == 400) {
-            toast.dismiss(loading);
-            toast.error(response.message, {
-              position: "bottom-right",
-            });
+          if (userData.status == 400) {
             setLogged(null);
+            toast.dismiss(loading);
+            toast.error(userData.message, {
+              position: "bottom-right",
+            });
+            return;
+          } else {
+            const response = await thirdPartyAccess(userDataFiltered);
+
+            if (response.status == 200) {
+              toast.dismiss(loading);
+              toast.success(response.message, {
+                position: "bottom-right",
+              });
+              setLogged(true);
+
+              setTimeout(() => {
+                setExit(true);
+                setTimeout(() => {
+                  window.sessionStorage.clear();
+                  window.location.href = "/noteboard";
+                }, 1000);
+              }, 500);
+            }
+
+            if (response.status == 400) {
+              toast.dismiss(loading);
+              toast.error(response.message, {
+                position: "bottom-right",
+              });
+              setLogged(null);
+            }
           }
         }
 
@@ -850,26 +860,28 @@ const UserAccess = forwardRef(
             return;
           }
 
-          const response = await thirdPartyAccess(userDataFiltered);
+          if (userData) {
+            const response = await thirdPartyAccess(userDataFiltered);
 
-          if (response.status == 200) {
-            toast.success(response.message, {
-              position: "bottom-right",
-            });
+            if (response.status == 200) {
+              toast.success(response.message, {
+                position: "bottom-right",
+              });
 
-            setTimeout(() => {
-              setExit(true);
               setTimeout(() => {
-                window.sessionStorage.clear();
-                window.location.href = "/noteboard";
-              }, 1000);
-            }, 500);
-          }
+                setExit(true);
+                setTimeout(() => {
+                  window.sessionStorage.clear();
+                  window.location.href = "/noteboard";
+                }, 1000);
+              }, 500);
+            }
 
-          if (response.status == 400) {
-            toast.error(response.message, {
-              position: "bottom-right",
-            });
+            if (response.status == 400) {
+              toast.error(response.message, {
+                position: "bottom-right",
+              });
+            }
           }
         }
       } catch (error) {
